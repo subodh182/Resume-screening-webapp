@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentSift v2 — Resume Screening System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="bg-canvas">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+  <div class="grid-overlay"></div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M11 2L3 6V11C3 15.4 6.5 19.6 11 20.9C15.5 19.6 19 15.4 19 11V6L11 2Z" fill="currentColor" opacity="0.9"/>
+          <path d="M8 11L10 13L14 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">TalentSift <span class="v2-badge">v2</span></span>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <button class="nav-item active" data-page="dashboard">
+      <span class="ni">⊞</span><span>Dashboard</span>
+    </button>
+    <button class="nav-item" data-page="upload">
+      <span class="ni">⬆</span><span>Upload Resume</span>
+      <span class="nav-badge">New</span>
+    </button>
+    <button class="nav-item" data-page="bulk">
+      <span class="ni">⊕</span><span>Bulk Upload</span>
+    </button>
+    <button class="nav-item" data-page="candidates">
+      <span class="ni">👤</span><span>Candidates</span>
+      <span class="nav-count" id="navCount">0</span>
+    </button>
+    <button class="nav-item" data-page="kanban">
+      <span class="ni">☰</span><span>Kanban Board</span>
+    </button>
+
+    <div class="nav-label">Hiring</div>
+    <button class="nav-item" data-page="interviews">
+      <span class="ni">📅</span><span>Interviews</span>
+      <span class="nav-count" id="interviewCount">0</span>
+    </button>
+    <button class="nav-item" data-page="jobs">
+      <span class="ni">💼</span><span>Job Positions</span>
+    </button>
+
+    <div class="nav-label">Insights</div>
+    <button class="nav-item" data-page="analytics">
+      <span class="ni">📊</span><span>Analytics</span>
+    </button>
+    <button class="nav-item" data-page="notifications">
+      <span class="ni">🔔</span><span>Notifications</span>
+      <span class="nav-count notif-count" id="notifBadge">0</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card" id="userCard">
+      <div class="user-av" id="userAv">HR</div>
+      <div>
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="theme-toggle" id="themeToggle">🌙 Theme</button>
+      <button class="logout-btn" id="logoutBtn">⎋</button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content" id="mainContent">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      <div>
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+        <p class="page-subtitle" id="pageSubtitle">Overview of your hiring pipeline</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" placeholder="Search candidates, skills..." id="globalSearch">
+      </div>
+      <button class="btn-icon-only" onclick="navigateTo('notifications')" title="Notifications">🔔</button>
+      <button class="btn-icon-only export-btn" onclick="exportCSV()" title="Export CSV">⬇ CSV</button>
+    </div>
+  </header>
+
+  <div class="pages-container">
+
+    <!-- ════ DASHBOARD ════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card s-total">
+          <div class="stat-ico">📋</div>
+          <div><div class="stat-val" id="stTotal">0</div><div class="stat-lbl">Total Resumes</div></div>
+        </div>
+        <div class="stat-card s-sl">
+          <div class="stat-ico">✅</div>
+          <div><div class="stat-val" id="stSL">0</div><div class="stat-lbl">Shortlisted</div></div>
+        </div>
+        <div class="stat-card s-rv">
+          <div class="stat-ico">⏳</div>
+          <div><div class="stat-val" id="stRV">0</div><div class="stat-lbl">Under Review</div></div>
+        </div>
+        <div class="stat-card s-rj">
+          <div class="stat-ico">❌</div>
+          <div><div class="stat-val" id="stRJ">0</div><div class="stat-lbl">Rejected</div></div>
+        </div>
+        <div class="stat-card s-avg">
+          <div class="stat-ico">⭐</div>
+          <div><div class="stat-val" id="stAvg">0</div><div class="stat-lbl">Avg Score</div></div>
+        </div>
+        <div class="stat-card s-int">
+          <div class="stat-ico">📅</div>
+          <div><div class="stat-val" id="stInt">0</div><div class="stat-lbl">Interviews</div></div>
+        </div>
+        <div class="stat-card s-jobs">
+          <div class="stat-ico">💼</div>
+          <div><div class="stat-val" id="stJobs">0</div><div class="stat-lbl">Active Jobs</div></div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dc quick-acts">
+          <h3 class="ct">Quick Actions</h3>
+          <button class="action-btn" onclick="navigateTo('upload')"><span class="aico" style="background:rgba(76,201,240,.15)">⬆</span><div><b>Upload Resume</b><small>Screen a candidate</small></div><span class="arr">→</span></button>
+          <button class="action-btn" onclick="navigateTo('bulk')"><span class="aico" style="background:rgba(244,162,97,.15)">⊕</span><div><b>Bulk Upload</b><small>Upload multiple resumes</small></div><span class="arr">→</span></button>
+          <button class="action-btn" onclick="navigateTo('kanban')"><span class="aico" style="background:rgba(129,140,248,.15)">☰</span><div><b>Kanban Board</b><small>Track hiring pipeline</small></div><span class="arr">→</span></button>
+          <button class="action-btn" onclick="navigateTo('interviews')"><span class="aico" style="background:rgba(6,214,160,.15)">📅</span><div><b>Schedule Interview</b><small>Book a slot</small></div><span class="arr">→</span></button>
+        </div>
+
+        <div class="dc pipeline-card">
+          <h3 class="ct">Pipeline Overview</h3>
+          <div id="pipelineOverview"></div>
+        </div>
+
+        <div class="dc recent-card">
+          <h3 class="ct">Recent Screenings</h3>
+          <div id="recentList"><div class="empty-sm">No screenings yet</div></div>
+        </div>
+
+        <div class="dc upcoming-card">
+          <h3 class="ct">Upcoming Interviews</h3>
+          <div id="upcomingInterviews"><div class="empty-sm">No interviews scheduled</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ UPLOAD ════ -->
+    <div class="page" id="page-upload">
+      <div class="upload-wrap">
+        <div class="upload-left">
+          <div class="dc">
+            <h3 class="ct">Select Job Position</h3>
+            <div class="fg"><label>Target Role</label><select class="fi" id="uploadJobSel"></select></div>
+            <div class="divider"></div>
+            <h3 class="ct">Upload Resume</h3>
+            <div class="drop-zone" id="dropZone">
+              <div style="font-size:2.5rem;opacity:.4">📄</div>
+              <strong>Drop resume here or click to browse</strong>
+              <span style="color:var(--sub);font-size:.8rem">PDF · DOC · DOCX · TXT · Max 16MB</span>
+              <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt" hidden>
+            </div>
+            <div class="file-preview" id="filePrev" style="display:none">
+              <span style="font-size:1.6rem">📄</span>
+              <div><div id="prevName" class="fn">file.pdf</div><div id="prevSize" class="fs">0 KB</div></div>
+              <button class="rm-btn" id="rmFile">✕</button>
+            </div>
+            <button class="btn-primary btn-full" id="analyzeBtn" disabled>⚡ Analyze Resume</button>
+          </div>
+        </div>
+        <div class="upload-right">
+          <div class="dc results-panel" id="resultsPanel">
+            <div class="rph" id="rph">
+              <div style="font-size:3rem;opacity:.2">📊</div>
+              <p style="color:var(--sub);text-align:center;font-size:.88rem">Upload a resume to see AI analysis results</p>
+            </div>
+            <div id="rContent" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Overlay -->
+      <div class="up-overlay" id="upOverlay" style="display:none">
+        <div class="up-prog-card">
+          <div class="spinner"></div>
+          <div class="prog-title">Analyzing Resume...</div>
+          <div id="progSteps">
+            <div class="prog-step active" id="ps1">📥 Extracting content</div>
+            <div class="prog-step" id="ps2">🧠 Parsing information</div>
+            <div class="prog-step" id="ps3">⚖️ Scoring against role</div>
+            <div class="prog-step" id="ps4">✅ Generating report</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ BULK UPLOAD ════ -->
+    <div class="page" id="page-bulk">
+      <div class="dc" style="max-width:700px;margin:0 auto">
+        <h3 class="ct">Bulk Resume Upload</h3>
+        <p style="color:var(--sub);font-size:.88rem;margin-bottom:20px">Upload multiple resumes at once. All will be screened against the selected job position.</p>
+        <div class="fg"><label>Target Job Position</label><select class="fi" id="bulkJobSel"></select></div>
+        <div class="bulk-drop" id="bulkDrop">
+          <div style="font-size:3rem;opacity:.3">📂</div>
+          <strong style="font-size:1rem">Drop multiple resumes here</strong>
+          <span style="color:var(--sub);font-size:.82rem">Or click to select files (PDF, DOC, DOCX, TXT)</span>
+          <input type="file" id="bulkInput" accept=".pdf,.doc,.docx,.txt" multiple hidden>
+        </div>
+        <div id="bulkFileList" style="margin:16px 0;display:flex;flex-direction:column;gap:8px"></div>
+        <button class="btn-primary btn-full" id="bulkAnalyzeBtn" disabled>⚡ Analyze All Resumes</button>
+        <div id="bulkResults" style="margin-top:20px"></div>
+      </div>
+    </div>
+
+    <!-- ════ CANDIDATES ════ -->
+    <div class="page" id="page-candidates">
+      <div class="cand-toolbar">
+        <div class="filter-grp">
+          <button class="fb active" data-filter="">All</button>
+          <button class="fb" data-filter="shortlisted">✅ Shortlisted</button>
+          <button class="fb" data-filter="review">⏳ Review</button>
+          <button class="fb" data-filter="maybe">❓ Maybe</button>
+          <button class="fb" data-filter="rejected">❌ Rejected</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select class="fi compact" id="candJobFilter"><option value="">All Positions</option></select>
+          <button class="btn-sec" onclick="loadCandidates()">⟳ Refresh</button>
+        </div>
+      </div>
+      <div class="cand-grid" id="candGrid">
+        <div class="empty-state"><div class="ei">👤</div><h3>No candidates yet</h3><p>Upload resumes to start screening</p><button class="btn-primary" onclick="navigateTo('upload')">Upload Resume</button></div>
+      </div>
+    </div>
+
+    <!-- ════ KANBAN ════ -->
+    <div class="page" id="page-kanban">
+      <div class="kanban-board" id="kanbanBoard">
+        <!-- Columns rendered by JS -->
+      </div>
+    </div>
+
+    <!-- ════ INTERVIEWS ════ -->
+    <div class="page" id="page-interviews">
+      <div class="int-wrap">
+        <div class="int-list-panel">
+          <div class="panel-hdr">
+            <h3 class="ct">Scheduled Interviews</h3>
+            <button class="btn-primary compact" onclick="openScheduleModal()">+ Schedule</button>
+          </div>
+          <div id="interviewList"><div class="empty-sm">No interviews scheduled yet</div></div>
+        </div>
+        <div class="int-cal-panel">
+          <h3 class="ct">Interview Calendar</h3>
+          <div class="mini-calendar" id="miniCalendar"></div>
+          <div class="cal-events" id="calEvents"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ JOBS ════ -->
+    <div class="page" id="page-jobs">
+      <div class="jobs-wrap">
+        <div class="jobs-list-panel">
+          <div class="panel-hdr">
+            <h3 class="ct">Job Positions</h3>
+            <button class="btn-primary compact" onclick="clearJobForm()">+ New Job</button>
+          </div>
+          <div id="jobsList"></div>
+        </div>
+        <div class="job-form-panel">
+          <div class="panel-hdr"><h3 class="ct" id="jobFormTitle">Create Job Position</h3></div>
+          <form id="jobForm" onsubmit="return false">
+            <div class="fg"><label>Job Title *</label><input class="fi" id="jTitle" placeholder="e.g. Senior Python Developer"></div>
+            <div class="fg"><label>Department</label><input class="fi" id="jDept" placeholder="e.g. Engineering"></div>
+            <div class="fg"><label>Location</label><input class="fi" id="jLoc" placeholder="Remote / On-site / Hybrid"></div>
+            <div class="fg"><label>Required Skills *</label><input class="fi" id="jReq" placeholder="python, django, postgresql"></div>
+            <div class="fg"><label>Preferred Skills</label><input class="fi" id="jPref" placeholder="kubernetes, aws, redis"></div>
+            <div class="fg"><label>Min. Experience (years)</label><input class="fi" type="number" id="jExp" placeholder="3" min="0"></div>
+            <div class="fg"><label>Job Status</label><select class="fi" id="jStatus"><option value="active">Active</option><option value="paused">Paused</option><option value="closed">Closed</option></select></div>
+            <div class="fg"><label>Description</label><textarea class="fi" id="jDesc" rows="4" placeholder="Describe the role..."></textarea></div>
+            <div style="display:flex;gap:10px">
+              <button class="btn-primary" style="flex:1" id="saveJobBtn">Save Position</button>
+              <button class="btn-sec" onclick="clearJobForm()" style="flex:1">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ ANALYTICS ════ -->
+    <div class="page" id="page-analytics">
+      <div class="an-grid">
+        <div class="dc an-card">
+          <h3 class="ct">Top Skills in Demand</h3>
+          <div id="anSkills"><div class="empty-sm">No data yet</div></div>
+        </div>
+        <div class="dc an-card">
+          <h3 class="ct">Score Distribution</h3>
+          <div id="anScores"><div class="empty-sm">No data yet</div></div>
+        </div>
+        <div class="dc an-card">
+          <h3 class="ct">Status Breakdown</h3>
+          <div id="anStatus"><div class="empty-sm">No data yet</div></div>
+        </div>
+        <div class="dc an-card">
+          <h3 class="ct">Upload Timeline</h3>
+          <div id="anTimeline"><div class="empty-sm">No data yet</div></div>
+        </div>
+        <div class="dc an-full">
+          <h3 class="ct">Pipeline Health Metrics</h3>
+          <div id="anHealth"><div class="empty-sm">No data yet</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ NOTIFICATIONS ════ -->
+    <div class="page" id="page-notifications">
+      <div class="dc" style="max-width:700px;margin:0 auto">
+        <h3 class="ct">Notifications</h3>
+        <div id="notifList"><div class="empty-sm">No notifications yet</div></div>
+      </div>
+    </div>
+
+  </div><!-- end pages-container -->
+</main>
+
+<!-- ════ CANDIDATE MODAL ════ -->
+<div class="modal-overlay" id="candModal" style="display:none">
+  <div class="modal-card large">
+    <button class="modal-close" onclick="closeCandModal()">✕</button>
+    <div id="candModalContent"></div>
+  </div>
+</div>
+
+<!-- ════ INTERVIEW SCHEDULE MODAL ════ -->
+<div class="modal-overlay" id="schedModal" style="display:none">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeSchedModal()">✕</button>
+    <h3 class="ct" style="margin-bottom:20px">📅 Schedule Interview</h3>
+    <div class="fg"><label>Candidate</label><select class="fi" id="sIntCandidate"></select></div>
+    <div class="fg"><label>Interviewer Name</label><input class="fi" id="sIntInterviewer" placeholder="e.g. John Smith"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fg"><label>Date</label><input class="fi" type="date" id="sIntDate"></div>
+      <div class="fg"><label>Time</label><input class="fi" type="time" id="sIntTime"></div>
+    </div>
+    <div class="fg"><label>Interview Type</label>
+      <select class="fi" id="sIntType">
+        <option>Video Call</option><option>Phone Screening</option>
+        <option>Technical Round</option><option>HR Round</option>
+        <option>In-Person</option><option>Panel Interview</option>
+      </select>
+    </div>
+    <div class="fg"><label>Meeting Link (optional)</label><input class="fi" id="sIntLink" placeholder="https://meet.google.com/..."></div>
+    <div class="fg"><label>Notes</label><textarea class="fi" id="sIntNotes" rows="3" placeholder="Interview agenda, preparation notes..."></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn-primary" style="flex:1" onclick="saveInterview()">📅 Schedule & Notify</button>
+      <button class="btn-sec" onclick="closeSchedModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastCont"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

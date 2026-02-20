@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentSift v2 — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--font-d:'Syne',sans-serif;--font-b:'DM Sans',sans-serif;}
+[data-theme="dark"]{--bg:#0b0f1a;--surface:#111827;--border:rgba(255,255,255,0.08);--text:#f0f4ff;--sub:#94a3b8;--muted:#4b5563;--input-bg:rgba(255,255,255,0.04);--accent:#4cc9f0;--accent2:#818cf8;}
+[data-theme="light"]{--bg:#f0f4ff;--surface:#fff;--border:rgba(0,0,0,0.08);--text:#0f172a;--sub:#475569;--muted:#94a3b8;--input-bg:rgba(0,0,0,0.03);--accent:#0ea5e9;--accent2:#818cf8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;transition:background 0.3s;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+.o1{width:500px;height:500px;background:rgba(76,201,240,0.07);top:-100px;right:-100px;animation:of 20s ease-in-out infinite;}
+.o2{width:400px;height:400px;background:rgba(129,140,248,0.06);bottom:-100px;left:-100px;animation:of 25s ease-in-out infinite reverse;}
+@keyframes of{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,-30px);}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:420px;max-width:95vw;position:relative;z-index:1;backdrop-filter:blur(20px);}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;}
+.logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#4cc9f0,#818cf8);display:flex;align-items:center;justify-content:center;color:white;}
+.logo-text{font-family:var(--font-d);font-size:1.3rem;font-weight:700;}
+h2{font-family:var(--font-d);font-size:1.6rem;font-weight:800;margin-bottom:6px;}
+.sub{font-size:0.88rem;color:var(--sub);margin-bottom:28px;}
+.tabs{display:flex;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;}
+.tab{flex:1;padding:8px;border:none;background:transparent;color:var(--sub);font-family:var(--font-b);font-size:0.88rem;font-weight:500;cursor:pointer;border-radius:9px;transition:all 0.2s;}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.form-group{margin-bottom:16px;}
+label{display:block;font-size:0.82rem;font-weight:600;color:var(--sub);margin-bottom:6px;}
+input,select{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:var(--font-b);font-size:0.88rem;outline:none;transition:all 0.2s;}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(76,201,240,0.15);}
+select option{background:var(--surface);}
+.btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#4cc9f0,#818cf8);color:white;font-family:var(--font-b);font-size:0.9rem;font-weight:600;cursor:pointer;margin-top:8px;transition:all 0.2s;}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1);}
+.demo-hint{margin-top:20px;padding:14px;border-radius:10px;background:rgba(76,201,240,0.08);border:1px solid rgba(76,201,240,0.15);font-size:0.82rem;color:var(--sub);}
+.demo-hint strong{color:var(--accent);display:block;margin-bottom:4px;}
+.error-msg{color:#ef4444;font-size:0.82rem;margin-top:8px;display:none;}
+.theme-btn{position:fixed;top:16px;right:16px;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--sub);cursor:pointer;font-size:1rem;z-index:10;}
+</style>
+</head>
+<body>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<button class="theme-btn" id="themeBtn" title="Toggle theme">☀️</button>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <path d="M11 2L3 6V11C3 15.4 6.5 19.6 11 20.9C15.5 19.6 19 15.4 19 11V6L11 2Z" fill="currentColor" opacity="0.9"/>
+        <path d="M8 11L10 13L14 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="logo-text">TalentSift v2</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+    <button class="tab" id="registerTab" onclick="switchTab('register')">Register</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="loginForm">
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="loginEmail" placeholder="admin@talentsift.com" value="admin@talentsift.com">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" value="admin123">
+    </div>
+    <div class="error-msg" id="loginError">Invalid email or password</div>
+    <button class="btn" onclick="doLogin()">Sign In →</button>
+    <div class="demo-hint">
+      <strong>🎯 Demo Credentials</strong>
+      Email: admin@talentsift.com &nbsp;|&nbsp; Password: admin123
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="registerForm" style="display:none">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="regName" placeholder="Jane Smith">
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="regEmail" placeholder="jane@company.com">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="regPass" placeholder="Min 6 characters">
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <select id="regRole">
+        <option value="recruiter">Recruiter</option>
+        <option value="hr_manager">HR Manager</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="error-msg" id="regError"></div>
+    <button class="btn" onclick="doRegister()">Create Account →</button>
+  </div>
+</div>
+
+<script>
+const html = document.documentElement;
+const saved = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', saved);
+document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️' : '🌙';
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+  document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️' : '🌙';
+});
+
+function switchTab(tab) {
+  document.getElementById('loginForm').style.display   = tab==='login'    ? 'block' : 'none';
+  document.getElementById('registerForm').style.display= tab==='register' ? 'block' : 'none';
+  document.getElementById('loginTab').classList.toggle('active',    tab==='login');
+  document.getElementById('registerTab').classList.toggle('active', tab==='register');
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass  = document.getElementById('loginPass').value;
+  const err   = document.getElementById('loginError');
+  err.style.display = 'none';
+  const r = await fetch('/api/auth/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+  const d = await r.json();
+  if(d.success) { window.location.href = '/'; }
+  else { err.textContent = d.error || 'Login failed'; err.style.display = 'block'; }
+}
+
+async function doRegister() {
+  const err = document.getElementById('regError');
+  err.style.display = 'none';
+  const data = {
+    name:     document.getElementById('regName').value,
+    email:    document.getElementById('regEmail').value,
+    password: document.getElementById('regPass').value,
+    role:     document.getElementById('regRole').value,
+  };
+  if(!data.name||!data.email||!data.password){err.textContent='All fields required';err.style.display='block';return;}
+  const r = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const d = await r.json();
+  if(d.success){alert('Account created! Please login.');switchTab('login');}
+  else{err.textContent=d.error||'Registration failed';err.style.display='block';}
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
