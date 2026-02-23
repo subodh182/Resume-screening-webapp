@@ -3,6 +3,7 @@ werkzeug>=2.3.0
 
 # MongoDB (optional - install if you have MongoDB running)
 pymongo>=4.6.0
+dnspython
 
 # Better PDF/DOCX parsing (optional but recommended)
 pdfplumber>=0.10.0
