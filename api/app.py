@@ -69,10 +69,21 @@ class DB:
 
         if MONGO_AVAILABLE:
             try:
-                client = MongoClient(
-                    os.environ.get('MONGO_URI', 'mongodb://localhost:27017/'),
-                    serverSelectionTimeoutMS=2000
-                )
+                # client = MongoClient(
+                #     os.environ.get('MONGO_URI', 'mongodb://localhost:27017/'),
+                #     serverSelectionTimeoutMS=2000
+                # )
+                mongo_uri = os.environ.get("MONGO_URI")
+                if mongo_uri:
+                    client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
+                    client.server_info()
+                    self.db = client['talentsift']
+                    self.use_mongo = True
+                    print("✅ MongoDB connected")
+                else:
+                    print("MongoDB not configured, using in-memory DB")
+
+
                 client.server_info()
                 self.db = client['talentsift']
                 self.use_mongo = True
