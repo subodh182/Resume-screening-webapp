@@ -15,7 +15,18 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);min-height
 .o1{width:500px;height:500px;background:rgba(76,201,240,0.07);top:-100px;right:-100px;animation:of 20s ease-in-out infinite;}
 .o2{width:400px;height:400px;background:rgba(129,140,248,0.06);bottom:-100px;left:-100px;animation:of 25s ease-in-out infinite reverse;}
 @keyframes of{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,-30px);}}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:420px;max-width:95vw;position:relative;z-index:1;backdrop-filter:blur(20px);}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:40px;
+  width:420px;
+  max-width:95vw;
+  position:relative;
+  z-index:1;
+  -webkit-backdrop-filter:blur(20px); /* Safari support */
+  backdrop-filter:blur(20px);
+}
 .logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;}
 .logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#4cc9f0,#818cf8);display:flex;align-items:center;justify-content:center;color:white;}
 .logo-text{font-family:var(--font-d);font-size:1.3rem;font-weight:700;}
@@ -40,6 +51,10 @@ select option{background:var(--surface);}
 .loading-btn{opacity:.7;pointer-events:none;}
 .role-select-wrap{position:relative;}
 .role-desc{font-size:.74rem;color:var(--muted);margin-top:5px;padding:7px 10px;background:var(--input-bg);border-radius:7px;border:1px solid var(--border);}
+.backdrop-class {
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  backdrop-filter: blur(10px);
+}
 </style>
 </head>
 <body>
@@ -99,9 +114,9 @@ select option{background:var(--surface);}
       <input type="password" id="regPass" placeholder="Min 6 characters">
     </div>
     <div class="form-group">
-      <label>Role</label>
+      <label for="regRole">Role</label>
       <div class="role-select-wrap">
-        <select id="regRole" onchange="updateRoleDesc()">
+        <select id="regRole" onchange="updateRoleDesc()" aria-label="Role">
           <option value="recruiter">Recruiter</option>
           <option value="hr_manager">HR Manager</option>
           <option value="admin">Admin</option>
