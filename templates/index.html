@@ -291,7 +291,14 @@
             <div class="fg"><label>Required Skills *</label><input class="fi" id="jReq" placeholder="python, django, postgresql"></div>
             <div class="fg"><label>Preferred Skills</label><input class="fi" id="jPref" placeholder="kubernetes, aws, redis"></div>
             <div class="fg"><label>Min. Experience (years)</label><input class="fi" type="number" id="jExp" placeholder="3" min="0"></div>
-            <div class="fg"><label>Job Status</label><select class="fi" id="jStatus"><option value="active">Active</option><option value="paused">Paused</option><option value="closed">Closed</option></select></div>
+            <div class="fg">
+              <label for="jStatus">Job Status</label>
+              <select class="fi" id="jStatus" title="Job Status">
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
             <div class="fg"><label>Description</label><textarea class="fi" id="jDesc" rows="4" placeholder="Describe the role..."></textarea></div>
             <div class="job-form-actions">
               <button class="btn-primary" id="saveJobBtn" type="submit">Save Position</button>
