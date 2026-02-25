@@ -29,56 +29,27 @@
     <button class="sidebar-toggle" id="sidebarToggle">☰</button>
   </div>
 
-  <nav class="sidebar-nav">
-    <div class="nav-label">Main</div>
-    <button class="nav-item active" data-page="dashboard">
-      <span class="ni">⊞</span><span>Dashboard</span>
-    </button>
-    <button class="nav-item" data-page="upload">
-      <span class="ni">⬆</span><span>Upload Resume</span>
-      <span class="nav-badge">New</span>
-    </button>
-    <button class="nav-item" data-page="bulk">
-      <span class="ni">⊕</span><span>Bulk Upload</span>
-    </button>
-    <button class="nav-item" data-page="candidates">
-      <span class="ni">👤</span><span>Candidates</span>
-      <span class="nav-count" id="navCount">0</span>
-    </button>
-    <button class="nav-item" data-page="kanban">
-      <span class="ni">☰</span><span>Kanban Board</span>
-    </button>
-
-    <div class="nav-label">Hiring</div>
-    <button class="nav-item" data-page="interviews">
-      <span class="ni">📅</span><span>Interviews</span>
-      <span class="nav-count" id="interviewCount">0</span>
-    </button>
-    <button class="nav-item" data-page="jobs">
-      <span class="ni">💼</span><span>Job Positions</span>
-    </button>
-
-    <div class="nav-label">Insights</div>
-    <button class="nav-item" data-page="analytics">
-      <span class="ni">📊</span><span>Analytics</span>
-    </button>
-    <button class="nav-item" data-page="notifications">
-      <span class="ni">🔔</span><span>Notifications</span>
-      <span class="nav-count notif-count" id="notifBadge">0</span>
-    </button>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <!-- Rendered by JS based on role -->
   </nav>
 
   <div class="sidebar-footer">
     <div class="user-card" id="userCard">
       <div class="user-av" id="userAv">HR</div>
-      <div>
+      <div class="user-card-info">
         <div class="user-name" id="userName">Loading...</div>
-        <div class="user-role" id="userRole">—</div>
+        <div class="user-role-badge" id="userRoleBadge">—</div>
       </div>
     </div>
     <div style="display:flex;gap:6px;margin-top:8px">
-      <button class="theme-toggle" id="themeToggle">🌙 Theme</button>
-      <button class="logout-btn" id="logoutBtn">⎋</button>
+      <button class="theme-toggle" id="themeToggle">🌙 <span>Theme</span></button>
+      <button class="logout-btn" id="logoutBtn" title="Logout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
     </div>
   </div>
 </aside>
@@ -94,12 +65,33 @@
       </div>
     </div>
     <div class="topbar-right">
-      <div class="search-bar">
+      <div class="search-bar" id="searchBarWrap">
         <span>🔍</span>
         <input type="text" placeholder="Search candidates, skills..." id="globalSearch">
       </div>
-      <button class="btn-icon-only" onclick="navigateTo('notifications')" title="Notifications">🔔</button>
-      <button class="btn-icon-only export-btn" onclick="exportCSV()" title="Export CSV">⬇ CSV</button>
+      <button class="btn-icon-only" onclick="navigateTo('notifications')" title="Notifications" id="notifBtn">
+        🔔 <span class="notif-dot" id="notifDot" style="display:none"></span>
+      </button>
+      <button class="btn-icon-only export-btn" onclick="exportCSV()" title="Export CSV" id="exportBtn">⬇ CSV</button>
+      <!-- Topbar Profile -->
+      <div class="topbar-profile" id="topbarProfile">
+        <div class="tp-av" id="topbarAv">HR</div>
+        <div class="tp-info">
+          <div class="tp-name" id="topbarName">Loading...</div>
+          <div class="tp-role" id="topbarRole">—</div>
+        </div>
+        <div class="tp-dropdown" id="tpDropdown">
+          <div class="tp-dd-item" onclick="navigateTo('notifications')">🔔 Notifications</div>
+          <div class="tp-dd-divider"></div>
+          <div class="tp-dd-item tp-dd-logout" onclick="doLogout()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>Logout
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -139,12 +131,9 @@
       </div>
 
       <div class="dash-grid">
-        <div class="dc quick-acts">
+        <div class="dc quick-acts" id="quickActsCard">
           <h3 class="ct">Quick Actions</h3>
-          <button class="action-btn" onclick="navigateTo('upload')"><span class="aico" style="background:rgba(76,201,240,.15)">⬆</span><div><b>Upload Resume</b><small>Screen a candidate</small></div><span class="arr">→</span></button>
-          <button class="action-btn" onclick="navigateTo('bulk')"><span class="aico" style="background:rgba(244,162,97,.15)">⊕</span><div><b>Bulk Upload</b><small>Upload multiple resumes</small></div><span class="arr">→</span></button>
-          <button class="action-btn" onclick="navigateTo('kanban')"><span class="aico" style="background:rgba(129,140,248,.15)">☰</span><div><b>Kanban Board</b><small>Track hiring pipeline</small></div><span class="arr">→</span></button>
-          <button class="action-btn" onclick="navigateTo('interviews')"><span class="aico" style="background:rgba(6,214,160,.15)">📅</span><div><b>Schedule Interview</b><small>Book a slot</small></div><span class="arr">→</span></button>
+          <!-- Rendered by JS based on role -->
         </div>
 
         <div class="dc pipeline-card">
@@ -191,13 +180,12 @@
           <div class="dc results-panel" id="resultsPanel">
             <div class="rph" id="rph">
               <div style="font-size:3rem;opacity:.2">📊</div>
-              <p style="color:var(--sub);text-align:center;font-size:.88rem">Upload a resume to see AI analysis results</p>
+              <p style="color:var(--sub);text-align:center;font-size:.88rem">Upload a resume to see analysis results</p>
             </div>
             <div id="rContent" style="display:none"></div>
           </div>
         </div>
       </div>
-      <!-- Overlay -->
       <div class="up-overlay" id="upOverlay" style="display:none">
         <div class="up-prog-card">
           <div class="spinner"></div>
@@ -252,9 +240,7 @@
 
     <!-- ════ KANBAN ════ -->
     <div class="page" id="page-kanban">
-      <div class="kanban-board" id="kanbanBoard">
-        <!-- Columns rendered by JS -->
-      </div>
+      <div class="kanban-board" id="kanbanBoard"></div>
     </div>
 
     <!-- ════ INTERVIEWS ════ -->
@@ -263,7 +249,7 @@
         <div class="int-list-panel">
           <div class="panel-hdr">
             <h3 class="ct">Scheduled Interviews</h3>
-            <button class="btn-primary compact" onclick="openScheduleModal()">+ Schedule</button>
+            <button class="btn-primary compact" id="scheduleNewBtn" onclick="openScheduleModal()">+ Schedule</button>
           </div>
           <div id="interviewList"><div class="empty-sm">No interviews scheduled yet</div></div>
         </div>
@@ -281,7 +267,7 @@
         <div class="jobs-list-panel">
           <div class="panel-hdr">
             <h3 class="ct">Job Positions</h3>
-            <button class="btn-primary compact" onclick="clearJobForm()">+ New Job</button>
+            <button class="btn-primary compact" id="newJobBtn" onclick="clearJobForm()">+ New Job</button>
           </div>
           <div id="jobsList"></div>
         </div>
@@ -339,10 +325,31 @@
       </div>
     </div>
 
+    <!-- ════ USERS (Admin only) ════ -->
+    <div class="page" id="page-users">
+      <div class="dc" style="max-width:800px;margin:0 auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <h3 class="ct">Team Members</h3>
+          <button class="btn-primary compact" onclick="navigateTo('notifications')">View Activity</button>
+        </div>
+        <div id="usersList"><div class="empty-sm">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ════ ACCESS DENIED ════ -->
+    <div class="page" id="page-denied">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;text-align:center">
+        <div style="font-size:4rem;margin-bottom:16px">🔒</div>
+        <h2 style="font-family:var(--fd);margin-bottom:8px">Access Restricted</h2>
+        <p style="color:var(--sub);font-size:.9rem">You don't have permission to view this section.</p>
+        <button class="btn-primary" style="margin-top:20px" onclick="navigateTo('dashboard')">← Back to Dashboard</button>
+      </div>
+    </div>
+
   </div><!-- end pages-container -->
 </main>
 
-<!-- ════ CANDIDATE MODAL ════ -->
+<!-- CANDIDATE MODAL -->
 <div class="modal-overlay" id="candModal" style="display:none">
   <div class="modal-card large">
     <button class="modal-close" onclick="closeCandModal()">✕</button>
@@ -350,7 +357,7 @@
   </div>
 </div>
 
-<!-- ════ INTERVIEW SCHEDULE MODAL ════ -->
+<!-- INTERVIEW SCHEDULE MODAL -->
 <div class="modal-overlay" id="schedModal" style="display:none">
   <div class="modal-card">
     <button class="modal-close" onclick="closeSchedModal()">✕</button>
