@@ -384,3 +384,40 @@ textarea.fi{resize:vertical;}
 @media(max-width:1024px){.upload-wrap{grid-template-columns:1fr;}.jobs-wrap{grid-template-columns:1fr;}.int-wrap{grid-template-columns:1fr;}}
 @media(max-width:768px){.sidebar{transform:translateX(-100%);width:var(--sw)!important;}.sidebar.mobile-open{transform:translateX(0);}.main-content{margin-left:0!important;}.mobile-menu-btn{display:flex;}.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.search-bar{display:none;}.an-health-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}.pages-container{padding:14px;}}
+
+/* ── ROLE-BASED UI NEW STYLES ──────────────────────────────────────────── */
+
+/* Logout button — proper SVG icon */
+.logout-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--brd);background:var(--ibg);color:var(--sub);cursor:pointer;font-size:1rem;transition:all var(--tr);display:flex;align-items:center;justify-content:center;}
+.logout-btn:hover{background:rgba(239,68,68,.15);color:var(--c-rj);border-color:rgba(239,68,68,.3);}
+
+/* User card in sidebar — updated */
+.user-card-info{flex:1;min-width:0;}
+.user-name{font-size:.84rem;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-role-badge{margin-top:3px;}
+
+/* Topbar Profile */
+.topbar-profile{position:relative;display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:10px;border:1px solid var(--brd);background:var(--ibg);cursor:pointer;transition:all var(--tr);user-select:none;}
+.topbar-profile:hover{background:var(--hov);}
+.tp-av{width:30px;height:30px;border-radius:50%;background:var(--bp);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.68rem;font-weight:700;color:white;flex-shrink:0;}
+.tp-info{display:flex;flex-direction:column;}
+.tp-name{font-size:.82rem;font-weight:600;color:var(--tx);white-space:nowrap;}
+.tp-role{font-size:.68rem;color:var(--sub);white-space:nowrap;}
+.tp-dropdown{position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:var(--surf);border:1px solid var(--brd2);border-radius:12px;padding:6px;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:200;opacity:0;pointer-events:none;transform:translateY(-8px);transition:all .2s ease;}
+.tp-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0);}
+.tp-dd-item{padding:8px 12px;border-radius:8px;font-size:.83rem;color:var(--sub);cursor:pointer;transition:all var(--tr);display:flex;align-items:center;}
+.tp-dd-item:hover{background:var(--hov);color:var(--tx);}
+.tp-dd-divider{border-top:1px solid var(--brd);margin:4px 0;}
+.tp-dd-logout{color:var(--c-rj)!important;}
+.tp-dd-logout:hover{background:rgba(239,68,68,.1)!important;}
+
+/* Notification dot in topbar */
+.notif-dot{display:inline-block;width:7px;height:7px;background:var(--c-rj);border-radius:50%;margin-left:2px;vertical-align:middle;}
+
+/* Sidebar collapsed — hide role badge and profile name */
+.sidebar.collapsed .user-card-info,.sidebar.collapsed .user-role-badge{display:none;}
+
+/* Access denied page */
+#page-denied{display:none;}
+#page-denied.active{display:block;}
+
