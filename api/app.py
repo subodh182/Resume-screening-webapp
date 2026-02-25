@@ -941,3 +941,9 @@ if __name__ == '__main__':
     print(f"  Login:    admin@talentsift.com / admin123")
     print("="*50 + "\n")
     app.run(debug=True, port=5000)
+
+    import traceback
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return traceback.format_exc(), 500
