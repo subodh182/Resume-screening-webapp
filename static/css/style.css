@@ -78,8 +78,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100vh
 .user-role{font-size:.72rem;color:var(--sub);text-transform:capitalize;}
 .theme-toggle{flex:1;display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:8px;border:1px solid var(--brd);background:var(--ibg);color:var(--sub);cursor:pointer;font-family:var(--fb);font-size:.82rem;transition:all var(--tr);}
 .theme-toggle:hover{background:var(--hov);color:var(--tx);}
-.logout-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--brd);background:var(--ibg);color:var(--sub);cursor:pointer;font-size:1rem;transition:all var(--tr);}
-.logout-btn:hover{background:rgba(239,68,68,.15);color:var(--c-rj);}
+.logout-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--brd);background:var(--ibg);color:var(--sub);cursor:pointer;font-size:1rem;transition:all var(--tr);display:flex;align-items:center;justify-content:center;}
+.logout-btn:hover{background:rgba(239,68,68,.15);color:var(--c-rj);border-color:rgba(239,68,68,.3);}
 
 /* MAIN */
 .main-content{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;transition:margin-left var(--tr);position:relative;z-index:1;}
