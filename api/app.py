@@ -75,20 +75,22 @@ class DB:
                 # )
                 mongo_uri = os.environ.get("MONGO_URI")
                 if mongo_uri:
-                    client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
-                    client.server_info()
-                    self.db = client['talentsift']
-                    self.use_mongo = True
-                    print("✅ MongoDB connected")
+                    try:
+                        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
+                        client.server_info()
+                        self.db = client["talentsift"]
+                        self.use_mongo = True
+                        print("✅ MongoDB connected")
+                        self._seed_default_jobs_mongo()
+                    except Exception as e:
+                        print(f"⚠ MongoDB connection failed: {e}")
+                        self.use_mongo = False
+                        self._seed_memory()
                 else:
                     print("MongoDB not configured, using in-memory DB")
+                    self.use_mongo = False
+                    self._seed_memory()
 
-
-                client.server_info()
-                self.db = client['talentsift']
-                self.use_mongo = True
-                print("✅ MongoDB connected")
-                self._seed_default_jobs_mongo()
             except Exception as e:
                 print(f"⚠️  MongoDB not available ({e}), using in-memory storage")
                 self._seed_memory()
