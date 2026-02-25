@@ -1,21 +1,130 @@
-// TalentSift v2 — Complete Frontend JS
-// Features: Auth, Dashboard, Upload, Bulk, Candidates, Kanban, Interviews, Jobs, Analytics
+// TalentSift v2 — Role-Based Frontend JS
+// Roles: admin | hr_manager | recruiter
 
 const API = '';
 let allResumes = [], allJobs = [], allInterviews = [];
 let currentFilter = '', currentJobFilter = '';
 let currentResume = null, editingJobId = null, calDate = new Date();
+let currentUser = null; // { name, email, role }
+
+// ── Role Config ────────────────────────────────────────────────────────────
+// Define what each role can see and do
+const ROLE_CONFIG = {
+  admin: {
+    nav: [
+      { label: 'Main', items: [
+        { page: 'dashboard', icon: '⊞', text: 'Dashboard' },
+        { page: 'upload',    icon: '⬆', text: 'Upload Resume', badge: 'New' },
+        { page: 'bulk',      icon: '⊕', text: 'Bulk Upload' },
+        { page: 'candidates',icon: '👤', text: 'Candidates', count: 'navCount' },
+        { page: 'kanban',    icon: '☰', text: 'Kanban Board' },
+      ]},
+      { label: 'Hiring', items: [
+        { page: 'interviews',icon: '📅', text: 'Interviews', count: 'interviewCount' },
+        { page: 'jobs',      icon: '💼', text: 'Job Positions' },
+      ]},
+      { label: 'Insights', items: [
+        { page: 'analytics',     icon: '📊', text: 'Analytics' },
+        { page: 'notifications', icon: '🔔', text: 'Notifications', count: 'notifBadge', countCls: 'notif-count' },
+        { page: 'users',         icon: '👥', text: 'Team Members' },
+      ]},
+    ],
+    quickActions: [
+      { page: 'upload',     icon: '⬆', color: 'rgba(76,201,240,.15)',   title: 'Upload Resume',     sub: 'Screen a candidate' },
+      { page: 'bulk',       icon: '⊕', color: 'rgba(244,162,97,.15)',   title: 'Bulk Upload',       sub: 'Upload multiple resumes' },
+      { page: 'kanban',     icon: '☰', color: 'rgba(129,140,248,.15)',  title: 'Kanban Board',      sub: 'Track hiring pipeline' },
+      { page: 'interviews', icon: '📅', color: 'rgba(6,214,160,.15)',   title: 'Schedule Interview', sub: 'Book a slot' },
+      { page: 'jobs',       icon: '💼', color: 'rgba(244,162,97,.15)',  title: 'Manage Jobs',       sub: 'Add or edit positions' },
+      { page: 'users',      icon: '👥', color: 'rgba(167,139,250,.15)', title: 'Team Members',      sub: 'View all users' },
+    ],
+    canExport: true,
+    canDeleteCandidate: true,
+    canChangeStatus: true,
+    canScheduleInterview: true,
+    canManageJobs: true,
+    canAddNotes: true,
+    canViewAnalytics: true,
+    canViewUsers: true,
+  },
+  hr_manager: {
+    nav: [
+      { label: 'Main', items: [
+        { page: 'dashboard', icon: '⊞', text: 'Dashboard' },
+        { page: 'upload',    icon: '⬆', text: 'Upload Resume', badge: 'New' },
+        { page: 'bulk',      icon: '⊕', text: 'Bulk Upload' },
+        { page: 'candidates',icon: '👤', text: 'Candidates', count: 'navCount' },
+        { page: 'kanban',    icon: '☰', text: 'Kanban Board' },
+      ]},
+      { label: 'Hiring', items: [
+        { page: 'interviews',icon: '📅', text: 'Interviews', count: 'interviewCount' },
+        { page: 'jobs',      icon: '💼', text: 'Job Positions' },
+      ]},
+      { label: 'Insights', items: [
+        { page: 'analytics',     icon: '📊', text: 'Analytics' },
+        { page: 'notifications', icon: '🔔', text: 'Notifications', count: 'notifBadge', countCls: 'notif-count' },
+      ]},
+    ],
+    quickActions: [
+      { page: 'upload',     icon: '⬆', color: 'rgba(76,201,240,.15)',  title: 'Upload Resume',     sub: 'Screen a candidate' },
+      { page: 'bulk',       icon: '⊕', color: 'rgba(244,162,97,.15)',  title: 'Bulk Upload',       sub: 'Upload multiple resumes' },
+      { page: 'kanban',     icon: '☰', color: 'rgba(129,140,248,.15)', title: 'Kanban Board',      sub: 'Track hiring pipeline' },
+      { page: 'interviews', icon: '📅', color: 'rgba(6,214,160,.15)',  title: 'Schedule Interview', sub: 'Book a slot' },
+    ],
+    canExport: true,
+    canDeleteCandidate: true,
+    canChangeStatus: true,
+    canScheduleInterview: true,
+    canManageJobs: true,
+    canAddNotes: true,
+    canViewAnalytics: true,
+    canViewUsers: false,
+  },
+  recruiter: {
+    nav: [
+      { label: 'Main', items: [
+        { page: 'dashboard', icon: '⊞', text: 'Dashboard' },
+        { page: 'upload',    icon: '⬆', text: 'Upload Resume', badge: 'New' },
+        { page: 'bulk',      icon: '⊕', text: 'Bulk Upload' },
+        { page: 'candidates',icon: '👤', text: 'Candidates', count: 'navCount' },
+      ]},
+      { label: 'Hiring', items: [
+        { page: 'interviews', icon: '📅', text: 'Interviews', count: 'interviewCount' },
+      ]},
+      { label: 'Activity', items: [
+        { page: 'notifications', icon: '🔔', text: 'Notifications', count: 'notifBadge', countCls: 'notif-count' },
+      ]},
+    ],
+    quickActions: [
+      { page: 'upload',     icon: '⬆', color: 'rgba(76,201,240,.15)',  title: 'Upload Resume',     sub: 'Screen a candidate' },
+      { page: 'bulk',       icon: '⊕', color: 'rgba(244,162,97,.15)',  title: 'Bulk Upload',       sub: 'Upload multiple resumes' },
+      { page: 'interviews', icon: '📅', color: 'rgba(6,214,160,.15)',  title: 'Schedule Interview', sub: 'Book a slot' },
+    ],
+    canExport: false,
+    canDeleteCandidate: false,
+    canChangeStatus: false,
+    canScheduleInterview: true,
+    canManageJobs: false,
+    canAddNotes: true,
+    canViewAnalytics: false,
+    canViewUsers: false,
+  },
+};
+
+function getRoleConfig() {
+  if (!currentUser) return ROLE_CONFIG.recruiter;
+  return ROLE_CONFIG[currentUser.role] || ROLE_CONFIG.recruiter;
+}
 
 // ── Theme ──────────────────────────────────────────────────────────────────
 const html = document.documentElement;
 const saved = localStorage.getItem('theme') || 'dark';
 html.setAttribute('data-theme', saved);
-document.getElementById('themeToggle').innerHTML = saved === 'dark' ? '☀️ Theme' : '🌙 Theme';
+document.getElementById('themeToggle').innerHTML = saved === 'dark' ? '☀️ <span>Theme</span>' : '🌙 <span>Theme</span>';
 document.getElementById('themeToggle').addEventListener('click', () => {
   const t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', t);
   localStorage.setItem('theme', t);
-  document.getElementById('themeToggle').innerHTML = t === 'dark' ? '☀️ Theme' : '🌙 Theme';
+  document.getElementById('themeToggle').innerHTML = t === 'dark' ? '☀️ <span>Theme</span>' : '🌙 <span>Theme</span>';
 });
 
 // ── Sidebar ────────────────────────────────────────────────────────────────
@@ -31,11 +140,21 @@ document.addEventListener('click', e => {
     sidebar.classList.remove('mobile-open');
 });
 
+// ── Topbar Profile Dropdown ────────────────────────────────────────────────
+document.getElementById('topbarProfile').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('tpDropdown').classList.toggle('open');
+});
+document.addEventListener('click', () => {
+  document.getElementById('tpDropdown').classList.remove('open');
+});
+
 // ── Logout ─────────────────────────────────────────────────────────────────
-document.getElementById('logoutBtn').addEventListener('click', async () => {
+document.getElementById('logoutBtn').addEventListener('click', doLogout);
+async function doLogout() {
   await fetch('/api/auth/logout', { method: 'POST' });
   window.location.href = '/login';
-});
+}
 
 // ── Toast ──────────────────────────────────────────────────────────────────
 function toast(msg, type = 'info') {
@@ -54,6 +173,68 @@ async function api(url, opts = {}) {
   return r.json();
 }
 
+// ── Build Sidebar Nav ──────────────────────────────────────────────────────
+function buildSidebarNav() {
+  const config = getRoleConfig();
+  const nav = document.getElementById('sidebarNav');
+  let html = '';
+  for (const group of config.nav) {
+    html += `<div class="nav-label">${group.label}</div>`;
+    for (const item of group.items) {
+      let extras = '';
+      if (item.badge) extras += `<span class="nav-badge">${item.badge}</span>`;
+      if (item.count) extras += `<span class="nav-count ${item.countCls||''}" id="${item.count}">0</span>`;
+      html += `<button class="nav-item" data-page="${item.page}">
+        <span class="ni">${item.icon}</span><span>${item.text}</span>${extras}
+      </button>`;
+    }
+  }
+  nav.innerHTML = html;
+  // Re-attach nav click listeners
+  document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => navigateTo(b.dataset.page)));
+}
+
+// ── Build Quick Actions ────────────────────────────────────────────────────
+function buildQuickActions() {
+  const config = getRoleConfig();
+  const card = document.getElementById('quickActsCard');
+  let html = '<h3 class="ct">Quick Actions</h3>';
+  for (const a of config.quickActions) {
+    html += `<button class="action-btn" onclick="navigateTo('${a.page}')">
+      <span class="aico" style="background:${a.color}">${a.icon}</span>
+      <div><b>${a.title}</b><small>${a.sub}</small></div>
+      <span class="arr">→</span>
+    </button>`;
+  }
+  card.innerHTML = html;
+}
+
+// ── Apply Role Restrictions to UI ─────────────────────────────────────────
+function applyRoleRestrictions() {
+  const config = getRoleConfig();
+
+  // Export button
+  const exportBtn = document.getElementById('exportBtn');
+  if (exportBtn) exportBtn.style.display = config.canExport ? '' : 'none';
+
+  // New Job button (in Jobs page)
+  const newJobBtn = document.getElementById('newJobBtn');
+  if (newJobBtn) newJobBtn.style.display = config.canManageJobs ? '' : 'none';
+
+  // Schedule button in interviews page
+  const scheduleNewBtn = document.getElementById('scheduleNewBtn');
+  if (scheduleNewBtn) scheduleNewBtn.style.display = config.canScheduleInterview ? '' : 'none';
+}
+
+// ── Role Badge Color ───────────────────────────────────────────────────────
+function roleBadgeHtml(role) {
+  const colors = { admin: '#ef4444', hr_manager: '#f4a261', recruiter: '#4cc9f0' };
+  const labels = { admin: '🔑 Admin', hr_manager: '👔 HR Manager', recruiter: '📋 Recruiter' };
+  const color = colors[role] || '#818cf8';
+  const label = labels[role] || role;
+  return `<span style="font-size:.68rem;padding:2px 8px;border-radius:20px;background:${color}22;color:${color};border:1px solid ${color}44;font-weight:600">${label}</span>`;
+}
+
 // ── Navigation ─────────────────────────────────────────────────────────────
 const pageMeta = {
   dashboard:     { title: 'Dashboard',       sub: 'Overview of your hiring pipeline' },
@@ -65,9 +246,28 @@ const pageMeta = {
   jobs:          { title: 'Job Positions',    sub: 'Manage your open roles and requirements' },
   analytics:     { title: 'Analytics',        sub: 'Insights and trends from your hiring data' },
   notifications: { title: 'Notifications',    sub: 'Recent system activity and alerts' },
+  users:         { title: 'Team Members',     sub: 'Manage system users and roles' },
+};
+
+// Pages each role can access
+const ALLOWED_PAGES = {
+  admin:      ['dashboard','upload','bulk','candidates','kanban','interviews','jobs','analytics','notifications','users'],
+  hr_manager: ['dashboard','upload','bulk','candidates','kanban','interviews','jobs','analytics','notifications'],
+  recruiter:  ['dashboard','upload','bulk','candidates','interviews','notifications'],
 };
 
 function navigateTo(page) {
+  const allowed = ALLOWED_PAGES[currentUser?.role] || ALLOWED_PAGES.recruiter;
+  if (!allowed.includes(page)) {
+    // Show access denied page
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-denied')?.classList.add('active');
+    document.getElementById('pageTitle').textContent = 'Access Denied';
+    document.getElementById('pageSubtitle').textContent = 'You do not have permission to view this section';
+    return;
+  }
+
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -75,26 +275,49 @@ function navigateTo(page) {
   const m = pageMeta[page] || {};
   document.getElementById('pageTitle').textContent = m.title || page;
   document.getElementById('pageSubtitle').textContent = m.sub || '';
-  const loaders = { dashboard: loadDashboard, candidates: () => { loadCandidates(); populateCandJobFilter(); },
-    kanban: loadKanban, interviews: () => { loadInterviews(); renderCalendar(); },
-    jobs: loadJobs, analytics: loadAnalytics, notifications: loadNotifications,
-    upload: populateUploadJobSel, bulk: populateBulkJobSel };
+  const loaders = {
+    dashboard: loadDashboard,
+    candidates: () => { loadCandidates(); populateCandJobFilter(); },
+    kanban: loadKanban,
+    interviews: () => { loadInterviews(); renderCalendar(); },
+    jobs: loadJobs,
+    analytics: loadAnalytics,
+    notifications: loadNotifications,
+    upload: populateUploadJobSel,
+    bulk: populateBulkJobSel,
+    users: loadUsers,
+  };
   if (loaders[page]) loaders[page]();
 }
-document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => navigateTo(b.dataset.page)));
 
 // ── User Info ──────────────────────────────────────────────────────────────
 async function loadUser() {
   const d = await api('/api/auth/me');
   if (d.user) {
+    currentUser = d.user;
+    const av = d.user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const roleLabel = { admin: 'Admin', hr_manager: 'HR Manager', recruiter: 'Recruiter' }[d.user.role] || d.user.role;
+
+    // Sidebar user card
     document.getElementById('userName').textContent = d.user.name;
-    document.getElementById('userRole').textContent = d.user.role.replace('_', ' ');
-    document.getElementById('userAv').textContent = d.user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    document.getElementById('userAv').textContent = av;
+    document.getElementById('userRoleBadge').innerHTML = roleBadgeHtml(d.user.role);
+
+    // Topbar profile
+    document.getElementById('topbarAv').textContent = av;
+    document.getElementById('topbarName').textContent = d.user.name;
+    document.getElementById('topbarRole').textContent = roleLabel;
+
+    // Build role-specific nav
+    buildSidebarNav();
+    buildQuickActions();
+    applyRoleRestrictions();
   }
 }
 
 // ── Dashboard ──────────────────────────────────────────────────────────────
 async function loadDashboard() {
+  const config = getRoleConfig();
   const [stats, resResp, intResp] = await Promise.all([api('/api/stats'), api('/api/resumes'), api('/api/interviews')]);
   allResumes = resResp.resumes || [];
   allInterviews = intResp.interviews || [];
@@ -106,15 +329,18 @@ async function loadDashboard() {
   document.getElementById('stAvg').textContent   = stats.avg_score || 0;
   document.getElementById('stInt').textContent   = stats.total_interviews || 0;
   document.getElementById('stJobs').textContent  = stats.active_jobs || 0;
-  document.getElementById('navCount').textContent = stats.total || 0;
-  document.getElementById('interviewCount').textContent = stats.total_interviews || 0;
+
+  const navCountEl = document.getElementById('navCount');
+  const intCountEl = document.getElementById('interviewCount');
+  if (navCountEl) navCountEl.textContent = stats.total || 0;
+  if (intCountEl) intCountEl.textContent = stats.total_interviews || 0;
 
   const total = stats.total || 1;
   const pipeData = [
-    { id:'sl', label:'Shortlisted', val: stats.shortlisted||0, cls:'pf-sl' },
-    { id:'rv', label:'Review',      val: stats.review||0,      cls:'pf-rv' },
-    { id:'mb', label:'Maybe',       val: stats.maybe||0,       cls:'pf-mb' },
-    { id:'rj', label:'Rejected',    val: stats.rejected||0,    cls:'pf-rj' },
+    { label: 'Shortlisted', val: stats.shortlisted||0, cls: 'pf-sl' },
+    { label: 'Review',      val: stats.review||0,      cls: 'pf-rv' },
+    { label: 'Maybe',       val: stats.maybe||0,       cls: 'pf-mb' },
+    { label: 'Rejected',    val: stats.rejected||0,    cls: 'pf-rj' },
   ];
   document.getElementById('pipelineOverview').innerHTML = pipeData.map(p => {
     const pct = Math.round((p.val / total) * 100);
@@ -126,7 +352,7 @@ async function loadDashboard() {
   }).join('');
   setTimeout(() => document.querySelectorAll('.pipe-fill[data-w]').forEach(el => el.style.width = el.dataset.w), 100);
 
-  // Recent
+  // Recent screenings
   const recent = allResumes.slice(0, 5);
   document.getElementById('recentList').innerHTML = recent.length === 0
     ? '<div class="empty-sm">No screenings yet</div>'
@@ -140,7 +366,7 @@ async function loadDashboard() {
         </div>`;
       }).join('');
 
-  // Upcoming interviews (next 7 days)
+  // Upcoming interviews
   const now = new Date();
   const upcoming = allInterviews
     .filter(i => new Date(i.interview_date) >= now)
@@ -223,6 +449,7 @@ function renderResults(r) {
   const ratingCls = {'Excellent':'sc-excellent','Good':'sc-good','Average':'sc-average','Below Average':'sc-below'}[sc.rating]||'sc-average';
   const circumference = 314;
   const offset = circumference - (sc.total_score/100)*circumference;
+  const config = getRoleConfig();
 
   const bdHtml = Object.entries(bd).map(([key, v]) => {
     const label = {'required_skills':'Required Skills','preferred_skills':'Preferred Skills','experience':'Experience','education':'Education'}[key]||key;
@@ -232,6 +459,11 @@ function renderResults(r) {
       <div class="bd-track"><div class="bd-fill" style="width:0%" data-w="${pct}%"></div></div>
     </div>`;
   }).join('');
+
+  const actionBtns = config.canChangeStatus
+    ? `<button class="ra ra-sl" onclick="quickStatus('${r._id}','shortlisted')">✓ Shortlist & Email</button>
+       <button class="ra ra-rj" onclick="quickStatus('${r._id}','rejected')">✗ Reject</button>`
+    : `<span style="font-size:.8rem;color:var(--sub);padding:8px">Contact HR Manager to update status</span>`;
 
   document.getElementById('rContent').innerHTML = `
     <div class="score-sec">
@@ -264,8 +496,7 @@ function renderResults(r) {
       <div><div class="sk-lbl missing">✗ Missing</div><div class="sk-tags">${missing.map(s=>`<span class="sk-tag sk-x">${s}</span>`).join('')||'<span style="color:var(--mut);font-size:.78rem">All covered!</span>'}</div></div>
     </div>
     <div class="res-actions" style="margin-top:16px">
-      <button class="ra ra-sl" onclick="quickStatus('${r._id}','shortlisted')">✓ Shortlist & Email</button>
-      <button class="ra ra-rj" onclick="quickStatus('${r._id}','rejected')">✗ Reject</button>
+      ${actionBtns}
       <button class="ra ra-new" onclick="resetUpload()">↺ New Upload</button>
     </div>`;
   document.getElementById('rContent').style.display = 'block';
@@ -277,8 +508,7 @@ function renderResults(r) {
 
 async function quickStatus(rid, status) {
   await api(`/api/resumes/${rid}/status`, { method:'PUT', body: JSON.stringify({ status }) });
-  const msg = status === 'shortlisted' ? 'Shortlisted! Email notification sent.' : 'Marked as rejected.';
-  toast(msg, status === 'shortlisted' ? 'success' : 'error');
+  toast(status === 'shortlisted' ? 'Shortlisted! Email notification sent.' : 'Marked as rejected.', status === 'shortlisted' ? 'success' : 'error');
 }
 
 function resetUpload() {
@@ -350,9 +580,11 @@ document.getElementById('bulkAnalyzeBtn').addEventListener('click', async () => 
 
 // ── Candidates ─────────────────────────────────────────────────────────────
 async function loadCandidates() {
+  const config = getRoleConfig();
   const d = await api(`/api/resumes?status=${currentFilter}&job_id=${currentJobFilter}&search=${document.getElementById('globalSearch').value}`);
   allResumes = d.resumes || [];
-  document.getElementById('navCount').textContent = d.total || 0;
+  const navCountEl = document.getElementById('navCount');
+  if (navCountEl) navCountEl.textContent = d.total || 0;
   const grid = document.getElementById('candGrid');
   if (!allResumes.length) {
     grid.innerHTML = `<div class="empty-state"><div class="ei">👤</div><h3>No candidates found</h3><p>Try adjusting filters</p><button class="btn-primary" onclick="navigateTo('upload')">Upload Resume</button></div>`;
@@ -363,6 +595,13 @@ async function loadCandidates() {
     const sc = r.scoring?.total_score || 0;
     const st = r.scoring?.status || 'pending';
     const skills = (r.parsed?.skills || []).slice(0, 4);
+
+    // Role-based action buttons on card
+    const schedBtn = config.canScheduleInterview
+      ? `<button class="cc-act sched" title="Schedule Interview" onclick="openScheduleModalFor('${r._id}')">📅</button>` : '';
+    const delBtn = config.canDeleteCandidate
+      ? `<button class="cc-act del" title="Delete" onclick="deleteResume('${r._id}')">✕</button>` : '';
+
     return `<div class="cand-card ${st}" onclick="openCandModal('${r._id}')">
       <div class="cc-hdr">
         <div class="cc-av">${initials(nm)}</div>
@@ -374,8 +613,7 @@ async function loadCandidates() {
         <span class="st-badge st-${st}">${cap(st)}</span>
         <span class="cc-date">${(r.uploaded_at||'').slice(0,10)}</span>
         <div class="cc-acts" onclick="event.stopPropagation()">
-          <button class="cc-act sched" title="Schedule Interview" onclick="openScheduleModalFor('${r._id}')">📅</button>
-          <button class="cc-act del" title="Delete" onclick="deleteResume('${r._id}')">✕</button>
+          ${schedBtn}${delBtn}
         </div>
       </div>
     </div>`;
@@ -399,6 +637,7 @@ async function populateCandJobFilter() {
 }
 
 async function deleteResume(id) {
+  if (!getRoleConfig().canDeleteCandidate) { toast('You do not have permission to delete candidates', 'error'); return; }
   if (!confirm('Delete this candidate?')) return;
   await api(`/api/resumes/${id}`, { method:'DELETE' });
   toast('Candidate deleted', 'info');
@@ -408,6 +647,7 @@ async function deleteResume(id) {
 
 // ── Candidate Modal ────────────────────────────────────────────────────────
 async function openCandModal(id) {
+  const config = getRoleConfig();
   const d = await api(`/api/resumes/${id}`);
   const r = d.resume;
   if (!r) return;
@@ -415,6 +655,31 @@ async function openCandModal(id) {
   const matched = [...(bd.required_skills?.matched||[]),...(bd.preferred_skills?.matched||[])];
   const missing = [...(bd.required_skills?.missing||[]),...(bd.preferred_skills?.missing||[])];
   const notes = (r.notes||[]);
+
+  // Status change section — only for admin and hr_manager
+  const statusSection = config.canChangeStatus ? `
+    <div style="margin-bottom:16px">
+      <div style="font-size:.78rem;font-weight:600;color:var(--sub);margin-bottom:8px">CHANGE STATUS</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        ${['shortlisted','review','maybe','rejected'].map(s => `<button onclick="updateStatus('${r._id}','${s}')" class="ra ra-${s==='shortlisted'?'sl':s==='rejected'?'rj':'new'}" style="flex:none;padding:6px 12px">${cap(s)}</button>`).join('')}
+      </div>
+    </div>` : `
+    <div style="margin-bottom:16px;padding:10px;background:var(--ibg);border-radius:8px;border:1px solid var(--brd)">
+      <div style="font-size:.78rem;color:var(--sub)">Status: <span class="st-badge st-${sc.status||'maybe'}" style="margin-left:6px">${cap(sc.status||'pending')}</span></div>
+      <div style="font-size:.74rem;color:var(--mut);margin-top:4px">Contact HR Manager to change status</div>
+    </div>`;
+
+  // Notes section
+  const notesInput = config.canAddNotes ? `
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input class="fi" id="noteInput" placeholder="Add a note..." style="flex:1">
+      <button class="btn-primary compact" onclick="addNote('${r._id}')">Add</button>
+    </div>` : '';
+
+  // Schedule button
+  const scheduleBtn = config.canScheduleInterview
+    ? `<button class="btn-primary compact" onclick="openScheduleModalFor('${r._id}');closeCandModal()">📅 Schedule Interview</button>` : '';
+
   document.getElementById('candModalContent').innerHTML = `
     <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
       <div class="cc-av" style="width:52px;height:52px;font-size:1.1rem">${initials(p.name||'U')}</div>
@@ -446,30 +711,21 @@ async function openCandModal(id) {
       <div class="sk-lbl missing">✗ Missing Skills (${missing.length})</div>
       <div class="sk-tags">${missing.map(s=>`<span class="sk-tag sk-x">${s}</span>`).join('')||'<span style="color:var(--mut);font-size:.8rem">All covered!</span>'}</div>
     </div>
-    <!-- Status Change -->
-    <div style="margin-bottom:16px">
-      <div style="font-size:.78rem;font-weight:600;color:var(--sub);margin-bottom:8px">CHANGE STATUS</div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap">
-        ${['shortlisted','review','maybe','rejected'].map(s => `<button onclick="updateStatus('${r._id}','${s}')" class="ra ra-${s==='shortlisted'?'sl':s==='rejected'?'rj':'new'}" style="flex:none;padding:6px 12px">${cap(s)}</button>`).join('')}
-      </div>
-    </div>
-    <!-- Notes -->
+    ${statusSection}
     <div style="margin-bottom:16px">
       <div style="font-size:.78rem;font-weight:600;color:var(--sub);margin-bottom:8px">RECRUITER NOTES</div>
-      ${notes.map(n=>`<div style="padding:8px 10px;background:var(--ibg);border:1px solid var(--brd);border-radius:8px;margin-bottom:6px;font-size:.82rem"><span style="color:var(--sub)">${n.by} · ${(n.at||'').slice(0,10)}</span><br>${n.text}</div>`).join('')}
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input class="fi" id="noteInput" placeholder="Add a note..." style="flex:1">
-        <button class="btn-primary compact" onclick="addNote('${r._id}')">Add</button>
-      </div>
+      ${notes.length === 0 ? '<div style="font-size:.8rem;color:var(--mut)">No notes yet</div>' : notes.map(n=>`<div style="padding:8px 10px;background:var(--ibg);border:1px solid var(--brd);border-radius:8px;margin-bottom:6px;font-size:.82rem"><span style="color:var(--sub)">${n.by} · ${(n.at||'').slice(0,10)}</span><br>${n.text}</div>`).join('')}
+      ${notesInput}
     </div>
     <div style="display:flex;gap:8px">
-      <button class="btn-primary compact" onclick="openScheduleModalFor('${r._id}');closeCandModal()">📅 Schedule Interview</button>
+      ${scheduleBtn}
       <button class="btn-sec" onclick="closeCandModal()">Close</button>
     </div>`;
   document.getElementById('candModal').style.display = 'flex';
 }
 
 async function updateStatus(rid, status) {
+  if (!getRoleConfig().canChangeStatus) { toast('Permission denied', 'error'); return; }
   await api(`/api/resumes/${rid}/status`, { method:'PUT', body: JSON.stringify({ status }) });
   toast(`Status updated to ${status}. ${status==='shortlisted'?'Email sent!':''}`, 'success');
   closeCandModal();
@@ -488,12 +744,12 @@ document.getElementById('candModal').addEventListener('click', e => { if(e.targe
 
 // ── Kanban ─────────────────────────────────────────────────────────────────
 const kanbanStages = [
-  { id:'applied',   label:'📥 Applied',    cls:'' },
-  { id:'screening', label:'🔍 Screening',  cls:'pf-rv' },
-  { id:'interview', label:'💬 Interview',  cls:'pf-mb' },
-  { id:'offer',     label:'📋 Offer',      cls:'pf-sl' },
-  { id:'hired',     label:'✅ Hired',      cls:'pf-sl' },
-  { id:'rejected',  label:'❌ Rejected',   cls:'pf-rj' },
+  { id:'applied',   label:'📥 Applied' },
+  { id:'screening', label:'🔍 Screening' },
+  { id:'interview', label:'💬 Interview' },
+  { id:'offer',     label:'📋 Offer' },
+  { id:'hired',     label:'✅ Hired' },
+  { id:'rejected',  label:'❌ Rejected' },
 ];
 
 async function loadKanban() {
@@ -542,7 +798,8 @@ document.addEventListener('dragend', () => { document.querySelectorAll('.kb-col'
 async function loadInterviews() {
   const d = await api('/api/interviews');
   allInterviews = d.interviews || [];
-  document.getElementById('interviewCount').textContent = allInterviews.length;
+  const intCountEl = document.getElementById('interviewCount');
+  if (intCountEl) intCountEl.textContent = allInterviews.length;
   const list = document.getElementById('interviewList');
   if (!allInterviews.length) { list.innerHTML = '<div class="empty-sm">No interviews scheduled yet</div>'; return; }
   const today = new Date().toISOString().slice(0,10);
@@ -607,7 +864,6 @@ async function deleteInterview(id) {
   loadInterviews(); renderCalendar();
 }
 
-// Schedule Modal
 function openScheduleModal() {
   populateSchedCandidates();
   document.getElementById('sIntDate').value = new Date().toISOString().slice(0,10);
@@ -656,11 +912,12 @@ async function saveInterview() {
 
 // ── Jobs ───────────────────────────────────────────────────────────────────
 async function loadJobs() {
+  const config = getRoleConfig();
   const d = await api('/api/jobs');
   allJobs = d.jobs || [];
   document.getElementById('jobsList').innerHTML = allJobs.length === 0
     ? '<div class="empty-sm">No jobs created yet</div>'
-    : allJobs.map(j => `<div class="job-item" onclick="editJob('${j._id}')">
+    : allJobs.map(j => `<div class="job-item" onclick="${config.canManageJobs ? `editJob('${j._id}')` : ''}">
         <div class="ji-title">${j.title}</div>
         <div class="ji-dept">${j.department} · ${j.location||'Remote'}</div>
         <div class="ji-meta">
@@ -669,6 +926,10 @@ async function loadJobs() {
           <span class="ji-status ji-${j.status||'active'}">${cap(j.status||'active')}</span>
         </div>
       </div>`).join('');
+
+  // Show/hide form based on role
+  const formPanel = document.querySelector('.job-form-panel');
+  if (formPanel) formPanel.style.display = config.canManageJobs ? '' : 'none';
 }
 
 function clearJobForm() {
@@ -680,6 +941,7 @@ function clearJobForm() {
 }
 
 function editJob(id) {
+  if (!getRoleConfig().canManageJobs) return;
   const j = allJobs.find(x => x._id === id);
   if (!j) return;
   editingJobId = id;
@@ -693,11 +955,10 @@ function editJob(id) {
   document.getElementById('jStatus').value = j.status||'active';
   document.getElementById('jDesc').value = j.description||'';
   document.getElementById('saveJobBtn').textContent = 'Update Position';
-  document.querySelectorAll('.job-item').forEach(el => el.classList.remove('active-item'));
-  document.querySelectorAll('.job-item').forEach(el => { if(el.onclick.toString().includes(id)) el.classList.add('active-item'); });
 }
 
 document.getElementById('saveJobBtn').addEventListener('click', async () => {
+  if (!getRoleConfig().canManageJobs) { toast('Permission denied', 'error'); return; }
   const title = document.getElementById('jTitle').value.trim();
   if (!title) { toast('Job title is required', 'error'); return; }
   const body = {
@@ -721,6 +982,10 @@ document.getElementById('saveJobBtn').addEventListener('click', async () => {
 
 // ── Analytics ──────────────────────────────────────────────────────────────
 async function loadAnalytics() {
+  if (!getRoleConfig().canViewAnalytics) {
+    navigateTo('denied');
+    return;
+  }
   const [statsD, skillsD, timeD, resD] = await Promise.all([
     api('/api/stats'), api('/api/analytics/skills'),
     api('/api/analytics/timeline'), api('/api/resumes')
@@ -750,7 +1015,7 @@ async function loadAnalytics() {
     </div>`;
   }).join('');
 
-  // Status breakdown
+  // Status
   const statuses = ['shortlisted','review','maybe','rejected'];
   const stColors = {shortlisted:'var(--c-sl)',review:'var(--c-rv)',maybe:'var(--c-mb)',rejected:'var(--c-rj)'};
   const total = resumes.length || 1;
@@ -779,13 +1044,10 @@ async function loadAnalytics() {
   const total2 = statsD.total || 0;
   const sl = statsD.shortlisted || 0;
   const convRate = total2 ? Math.round(sl/total2*100) : 0;
-  const avgSc = statsD.avg_score || 0;
-  const intCnt = statsD.total_interviews || 0;
-  const jobsCnt = statsD.active_jobs || 0;
   document.getElementById('anHealth').innerHTML = `<div class="an-health-grid">
     ${[{v:total2,l:'Total Screened',c:'var(--c-ac)'},{v:sl,l:'Shortlisted',c:'var(--c-sl)'},
-       {v:convRate+'%',l:'Conversion Rate',c:'var(--c-rv)'},{v:avgSc,l:'Avg Score',c:'var(--c-mb)'},
-       {v:intCnt,l:'Interviews',c:'var(--c-ac)'}].map(m =>
+       {v:convRate+'%',l:'Conversion Rate',c:'var(--c-rv)'},{v:statsD.avg_score||0,l:'Avg Score',c:'var(--c-mb)'},
+       {v:statsD.total_interviews||0,l:'Interviews',c:'var(--c-ac)'}].map(m =>
       `<div class="ahc"><div class="ahc-val" style="color:${m.c}">${m.v}</div><div class="ahc-lbl">${m.l}</div></div>`).join('')}
   </div>`;
 }
@@ -794,7 +1056,11 @@ async function loadAnalytics() {
 async function loadNotifications() {
   const d = await api('/api/notifications');
   const notifs = d.notifications || [];
-  document.getElementById('notifBadge').textContent = notifs.filter(n => !n.read).length;
+  const unread = notifs.filter(n => !n.read).length;
+  const notifBadgeEl = document.getElementById('notifBadge');
+  if (notifBadgeEl) notifBadgeEl.textContent = unread;
+  const notifDot = document.getElementById('notifDot');
+  if (notifDot) notifDot.style.display = unread > 0 ? 'inline-block' : 'none';
   const icons = { job_created:'💼', resume_uploaded:'📄', shortlisted:'✅', bulk_upload:'📂', interview_scheduled:'📅' };
   document.getElementById('notifList').innerHTML = notifs.length === 0
     ? '<div class="empty-sm">No notifications yet</div>'
@@ -802,6 +1068,23 @@ async function loadNotifications() {
         <div class="notif-icon">${icons[n.type]||'🔔'}</div>
         <div class="notif-msg">${n.message}</div>
         <div class="notif-time">${(n.created_at||'').slice(11,16)}</div>
+      </div>`).join('');
+}
+
+// ── Users (Admin only) ─────────────────────────────────────────────────────
+async function loadUsers() {
+  if (!getRoleConfig().canViewUsers) { navigateTo('dashboard'); return; }
+  const d = await api('/api/users');
+  const users = d.users || [];
+  document.getElementById('usersList').innerHTML = users.length === 0
+    ? '<div class="empty-sm">No users found</div>'
+    : users.map(u => `<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--ibg);border:1px solid var(--brd);border-radius:12px;margin-bottom:10px">
+        <div class="user-av" style="width:42px;height:42px;font-size:.9rem">${initials(u.name)}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:.92rem">${u.name}</div>
+          <div style="font-size:.78rem;color:var(--sub)">${u.email}</div>
+        </div>
+        ${roleBadgeHtml(u.role)}
       </div>`).join('');
 }
 
@@ -813,6 +1096,7 @@ document.getElementById('globalSearch').addEventListener('input', e => {
 
 // ── Export CSV ─────────────────────────────────────────────────────────────
 function exportCSV() {
+  if (!getRoleConfig().canExport) { toast('Export permission denied', 'error'); return; }
   window.open('/api/export/csv', '_blank');
   toast('Downloading CSV export...', 'info');
 }
@@ -825,9 +1109,13 @@ function cap(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
 
 // ── Init ───────────────────────────────────────────────────────────────────
 (async () => {
-  await loadUser();
+  await loadUser();  // loads user, builds nav, applies restrictions
   await loadDashboard();
   await populateUploadJobSel();
   const notifs = await api('/api/notifications');
-  document.getElementById('notifBadge').textContent = (notifs.notifications||[]).filter(n=>!n.read).length;
+  const unread = (notifs.notifications||[]).filter(n=>!n.read).length;
+  const notifBadgeEl = document.getElementById('notifBadge');
+  if (notifBadgeEl) notifBadgeEl.textContent = unread;
+  const notifDot = document.getElementById('notifDot');
+  if (notifDot) notifDot.style.display = unread > 0 ? 'inline-block' : 'none';
 })();
