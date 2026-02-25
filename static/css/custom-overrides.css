@@ -1,0 +1,123 @@
+/* Sidebar actions */
+.sidebar-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+/* Bulk upload panel */
+.bulk-upload-panel {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.bulk-upload-desc {
+  color: var(--sub);
+  font-size: .88rem;
+  margin-bottom: 20px;
+}
+.bulk-drop-icon {
+  font-size: 3rem;
+  opacity: .3;
+}
+.bulk-drop-title {
+  font-size: 1rem;
+}
+.bulk-drop-hint {
+  color: var(--sub);
+  font-size: .82rem;
+}
+#bulkFileList {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#bulkResults {
+  margin-top: 20px;
+}
+
+/* Drop zone */
+.drop-icon {
+  font-size: 2.5rem;
+  opacity: .4;
+}
+.drop-title {
+  font-size: 1rem;
+}
+.drop-hint {
+  color: var(--sub);
+  font-size: .8rem;
+}
+.file-icon {
+  font-size: 1.6rem;
+}
+
+/* Results panel */
+.results-icon {
+  font-size: 3rem;
+  opacity: .2;
+}
+.results-hint {
+  color: var(--sub);
+  text-align: center;
+  font-size: .88rem;
+}
+
+/* Hide elements */
+#filePrev,
+#rContent,
+#upOverlay {
+  display: none;
+}
+
+/* Notifications panel */
+.notifications-panel {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Users header */
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Candidate toolbar actions */
+.cand-toolbar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Job form actions */
+.job-form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Denied container */
+.denied-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+}
+.denied-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+.denied-title {
+  font-family: var(--fd);
+  margin-bottom: 8px;
+}
+.denied-message {
+  color: var(--sub);
+  font-size: 0.9rem;
+}
+.btn-primary {
+  margin-top: 20px;
+}
