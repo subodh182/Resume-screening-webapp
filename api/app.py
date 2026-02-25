@@ -83,7 +83,7 @@ class DB:
                 mongo_uri = os.environ.get("MONGO_URI")
                 if mongo_uri:
                     try:
-                        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
+                        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
                         client.server_info()
                         self.db = client["talentsift"]
                         self.use_mongo = True
