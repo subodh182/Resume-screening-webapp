@@ -16,31 +16,36 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);min-height
 .o2{width:400px;height:400px;background:rgba(129,140,248,0.06);bottom:-100px;left:-100px;animation:of 25s ease-in-out infinite reverse;}
 @keyframes of{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,-30px);}}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:420px;max-width:95vw;position:relative;z-index:1;backdrop-filter:blur(20px);}
-.logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;}
 .logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#4cc9f0,#818cf8);display:flex;align-items:center;justify-content:center;color:white;}
 .logo-text{font-family:var(--font-d);font-size:1.3rem;font-weight:700;}
-h2{font-family:var(--font-d);font-size:1.6rem;font-weight:800;margin-bottom:6px;}
-.sub{font-size:0.88rem;color:var(--sub);margin-bottom:28px;}
-.tabs{display:flex;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;}
+.logo-sub{font-size:.72rem;color:var(--sub);margin-top:1px;}
+h2{font-family:var(--font-d);font-size:1.55rem;font-weight:800;margin-bottom:4px;}
+.sub{font-size:0.86rem;color:var(--sub);margin-bottom:26px;}
+.tabs{display:flex;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:22px;}
 .tab{flex:1;padding:8px;border:none;background:transparent;color:var(--sub);font-family:var(--font-b);font-size:0.88rem;font-weight:500;cursor:pointer;border-radius:9px;transition:all 0.2s;}
 .tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.15);}
-.form-group{margin-bottom:16px;}
-label{display:block;font-size:0.82rem;font-weight:600;color:var(--sub);margin-bottom:6px;}
+.form-group{margin-bottom:15px;}
+label{display:block;font-size:0.82rem;font-weight:600;color:var(--sub);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;}
 input,select{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-family:var(--font-b);font-size:0.88rem;outline:none;transition:all 0.2s;}
 input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(76,201,240,0.15);}
 select option{background:var(--surface);}
 .btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#4cc9f0,#818cf8);color:white;font-family:var(--font-b);font-size:0.9rem;font-weight:600;cursor:pointer;margin-top:8px;transition:all 0.2s;}
 .btn:hover{transform:translateY(-1px);filter:brightness(1.1);}
-.demo-hint{margin-top:20px;padding:14px;border-radius:10px;background:rgba(76,201,240,0.08);border:1px solid rgba(76,201,240,0.15);font-size:0.82rem;color:var(--sub);}
-.demo-hint strong{color:var(--accent);display:block;margin-bottom:4px;}
-.error-msg{color:#ef4444;font-size:0.82rem;margin-top:8px;display:none;}
-.theme-btn{position:fixed;top:16px;right:16px;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--sub);cursor:pointer;font-size:1rem;z-index:10;}
+.btn:active{transform:translateY(0);}
+.error-msg{color:#ef4444;font-size:0.82rem;margin-top:10px;display:none;padding:10px 12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;}
+.success-msg{color:#06d6a0;font-size:0.82rem;margin-top:10px;display:none;padding:10px 12px;background:rgba(6,214,160,0.08);border:1px solid rgba(6,214,160,0.2);border-radius:8px;}
+.theme-btn{position:fixed;top:16px;right:16px;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--sub);cursor:pointer;font-size:1rem;z-index:10;transition:all .2s;}
+.theme-btn:hover{background:var(--input-bg);}
+.loading-btn{opacity:.7;pointer-events:none;}
+.role-select-wrap{position:relative;}
+.role-desc{font-size:.74rem;color:var(--muted);margin-top:5px;padding:7px 10px;background:var(--input-bg);border-radius:7px;border:1px solid var(--border);}
 </style>
 </head>
 <body>
 <div class="orb o1"></div>
 <div class="orb o2"></div>
-<button class="theme-btn" id="themeBtn" title="Toggle theme">☀️</button>
+<button class="theme-btn" id="themeBtn" title="Toggle theme" type="button">☀️</button>
 
 <div class="card">
   <div class="logo">
@@ -50,34 +55,37 @@ select option{background:var(--surface);}
         <path d="M8 11L10 13L14 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <span class="logo-text">TalentSift v2</span>
+    <div>
+      <div class="logo-text">TalentSift <span class="logo-version">v2</span></div>
+      <div class="logo-sub">Resume Screening System</div>
+    </div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
-    <button class="tab" id="registerTab" onclick="switchTab('register')">Register</button>
+    <button class="tab active" id="loginTab" onclick="switchTab('login')" type="button">Sign In</button>
+    <button class="tab" id="registerTab" onclick="switchTab('register')" type="button">Register</button>
   </div>
 
   <!-- LOGIN -->
   <div id="loginForm">
+    <h2>Welcome back</h2>
+    <p class="sub">Sign in to your TalentSift account</p>
     <div class="form-group">
       <label>Email Address</label>
-      <input type="email" id="loginEmail" placeholder="admin@talentsift.com" value="admin@talentsift.com">
+      <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" id="loginPass" placeholder="••••••••" value="admin123">
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
     </div>
-    <div class="error-msg" id="loginError">Invalid email or password</div>
-    <button class="btn" onclick="doLogin()">Sign In →</button>
-    <div class="demo-hint">
-      <strong>🎯 Demo Credentials</strong>
-      Email: admin@talentsift.com &nbsp;|&nbsp; Password: admin123
-    </div>
+    <div class="error-msg" id="loginError"></div>
+    <button class="btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
   </div>
 
   <!-- REGISTER -->
-  <div id="registerForm" style="display:none">
+  <div id="registerForm" class="hidden">
+    <h2>Create account</h2>
+    <p class="sub">Join TalentSift to start screening resumes</p>
     <div class="form-group">
       <label>Full Name</label>
       <input type="text" id="regName" placeholder="Jane Smith">
@@ -92,14 +100,18 @@ select option{background:var(--surface);}
     </div>
     <div class="form-group">
       <label>Role</label>
-      <select id="regRole">
-        <option value="recruiter">Recruiter</option>
-        <option value="hr_manager">HR Manager</option>
-        <option value="admin">Admin</option>
-      </select>
+      <div class="role-select-wrap">
+        <select id="regRole" onchange="updateRoleDesc()">
+          <option value="recruiter">Recruiter</option>
+          <option value="hr_manager">HR Manager</option>
+          <option value="admin">Admin</option>
+        </select>
+        <div class="role-desc" id="roleDesc">📋 Can upload resumes, view candidates, schedule interviews</div>
+      </div>
     </div>
     <div class="error-msg" id="regError"></div>
-    <button class="btn" onclick="doRegister()">Create Account →</button>
+    <div class="success-msg" id="regSuccess"></div>
+    <button class="btn" id="regBtn" onclick="doRegister()">Create Account →</button>
   </div>
 </div>
 
@@ -115,6 +127,17 @@ document.getElementById('themeBtn').addEventListener('click', () => {
   document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️' : '🌙';
 });
 
+const roleDescriptions = {
+  recruiter: '📋 Can upload resumes, view candidates, schedule interviews',
+  hr_manager: '👔 Can manage candidates, jobs, interviews, and view analytics',
+  admin: '🔑 Full access — manage users, all data, system settings'
+};
+
+function updateRoleDesc() {
+  const role = document.getElementById('regRole').value;
+  document.getElementById('roleDesc').textContent = roleDescriptions[role] || '';
+}
+
 function switchTab(tab) {
   document.getElementById('loginForm').style.display   = tab==='login'    ? 'block' : 'none';
   document.getElementById('registerForm').style.display= tab==='register' ? 'block' : 'none';
@@ -123,33 +146,54 @@ function switchTab(tab) {
 }
 
 async function doLogin() {
-  const email = document.getElementById('loginEmail').value;
+  const email = document.getElementById('loginEmail').value.trim();
   const pass  = document.getElementById('loginPass').value;
   const err   = document.getElementById('loginError');
+  const btn   = document.getElementById('loginBtn');
   err.style.display = 'none';
-  const r = await fetch('/api/auth/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
-  const d = await r.json();
-  if(d.success) { window.location.href = '/'; }
-  else { err.textContent = d.error || 'Login failed'; err.style.display = 'block'; }
+  if (!email || !pass) { err.textContent = 'Email and password are required'; err.style.display = 'block'; return; }
+  btn.textContent = 'Signing in...'; btn.classList.add('loading-btn');
+  try {
+    const r = await fetch('/api/auth/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const d = await r.json();
+    if (d.success) { window.location.href = '/'; }
+    else { err.textContent = d.error || 'Invalid email or password'; err.style.display = 'block'; }
+  } catch(e) { err.textContent = 'Network error. Please try again.'; err.style.display = 'block'; }
+  btn.textContent = 'Sign In →'; btn.classList.remove('loading-btn');
 }
 
 async function doRegister() {
   const err = document.getElementById('regError');
-  err.style.display = 'none';
+  const suc = document.getElementById('regSuccess');
+  const btn = document.getElementById('regBtn');
+  err.style.display = 'none'; suc.style.display = 'none';
   const data = {
-    name:     document.getElementById('regName').value,
-    email:    document.getElementById('regEmail').value,
+    name:     document.getElementById('regName').value.trim(),
+    email:    document.getElementById('regEmail').value.trim(),
     password: document.getElementById('regPass').value,
     role:     document.getElementById('regRole').value,
   };
-  if(!data.name||!data.email||!data.password){err.textContent='All fields required';err.style.display='block';return;}
-  const r = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-  const d = await r.json();
-  if(d.success){alert('Account created! Please login.');switchTab('login');}
-  else{err.textContent=d.error||'Registration failed';err.style.display='block';}
+  if (!data.name||!data.email||!data.password) { err.textContent='All fields are required'; err.style.display='block'; return; }
+  if (data.password.length < 6) { err.textContent='Password must be at least 6 characters'; err.style.display='block'; return; }
+  btn.textContent = 'Creating account...'; btn.classList.add('loading-btn');
+  try {
+    const r = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const d = await r.json();
+    if (d.success) {
+      suc.textContent = '✅ Account created successfully! Please sign in.';
+      suc.style.display = 'block';
+      setTimeout(() => switchTab('login'), 1500);
+    } else { err.textContent = d.error||'Registration failed'; err.style.display='block'; }
+  } catch(e) { err.textContent='Network error. Please try again.'; err.style.display='block'; }
+  btn.textContent = 'Create Account →'; btn.classList.remove('loading-btn');
 }
 
-document.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const activeTab = document.getElementById('loginTab').classList.contains('active');
+    if (activeTab) doLogin(); else doRegister();
+  }
+});
 </script>
 </body>
 </html>
