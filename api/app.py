@@ -40,17 +40,10 @@ except ImportError:
     DOCX_AVAILABLE = False
 
 # ── App Config ────────────────────────────────────────────────────────────────
-# app = Flask(__name__)
-app = Flask(__name__, template_folder="../templates", static_folder="../static")
+app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'talentsift_v2_secret_2024_xyz')
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024   # 50 MB
-# app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
-app.config['ALLOWED_EXTENSIONS'] = {'pdf', 'doc', 'docx', 'txt'}
-
-UPLOAD_FOLDER = "/tmp/uploads"
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf', 'doc', 'docx', 'txt'}
 
 # Email config (set via env vars or edit here)
@@ -60,8 +53,7 @@ app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
 app.config['MAIL_FROM']     = os.environ.get('MAIL_FROM',     'noreply@talentsift.com')
 
-# os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # ── Database (MongoDB with in-memory fallback) ────────────────────────────────
 class DB:
@@ -76,28 +68,15 @@ class DB:
 
         if MONGO_AVAILABLE:
             try:
-                # client = MongoClient(
-                #     os.environ.get('MONGO_URI', 'mongodb://localhost:27017/'),
-                #     serverSelectionTimeoutMS=2000
-                # )
-                mongo_uri = os.environ.get("MONGO_URI")
-                if mongo_uri:
-                    try:
-                        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
-                        client.server_info()
-                        self.db = client["talentsift"]
-                        self.use_mongo = True
-                        print("✅ MongoDB connected")
-                        self._seed_default_jobs_mongo()
-                    except Exception as e:
-                        print(f"⚠ MongoDB connection failed: {e}")
-                        self.use_mongo = False
-                        self._seed_memory()
-                else:
-                    print("MongoDB not configured, using in-memory DB")
-                    self.use_mongo = False
-                    self._seed_memory()
-
+                client = MongoClient(
+                    os.environ.get('MONGO_URI', 'mongodb://localhost:27017/'),
+                    serverSelectionTimeoutMS=2000
+                )
+                client.server_info()
+                self.db = client['talentsift']
+                self.use_mongo = True
+                print("✅ MongoDB connected")
+                self._seed_default_jobs_mongo()
             except Exception as e:
                 print(f"⚠️  MongoDB not available ({e}), using in-memory storage")
                 self._seed_memory()
@@ -947,12 +926,6 @@ if __name__ == '__main__':
     print(f"  PDF:      {'✅ pdfplumber' if PDF_AVAILABLE else '⚠️  Basic extraction'}")
     print(f"  DOCX:     {'✅ python-docx' if DOCX_AVAILABLE else '⚠️  Basic extraction'}")
     print(f"  URL:      http://localhost:5000")
-    print(f"  Login:    admin@talentsift.com / admin123")
+
     print("="*50 + "\n")
     app.run(debug=True, port=5000)
-
-    import traceback
-
-@app.errorhandler(Exception)
-def handle_exception(e):
-    return traceback.format_exc(), 500
