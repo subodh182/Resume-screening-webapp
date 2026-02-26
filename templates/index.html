@@ -26,7 +26,7 @@
       </div>
       <span class="logo-text">TalentSift <span class="v2-badge">v2</span></span>
     </div>
-    <button class="sidebar-toggle" id="sidebarToggle" type="button">☰</button>
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
   </div>
 
   <nav class="sidebar-nav" id="sidebarNav">
@@ -41,10 +41,10 @@
         <div class="user-role-badge" id="userRoleBadge">—</div>
       </div>
     </div>
-    <div class="sidebar-actions">
-      <button class="theme-toggle" id="themeToggle" type="button">🌙 <span>Theme</span></button>
-      <button class="logout-btn" id="logoutBtn" title="Logout" type="button">
-        <svg style="width:24px;height:24px;fill:#fff" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="theme-toggle" id="themeToggle">🌙 <span>Theme</span></button>
+      <button class="logout-btn" id="logoutBtn" title="Logout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/>
           <line x1="21" y1="12" x2="9" y2="12"/>
@@ -58,7 +58,7 @@
 <main class="main-content" id="mainContent">
   <header class="topbar">
     <div class="topbar-left">
-      <button class="mobile-menu-btn" id="mobileMenuBtn" type="button">☰</button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
       <div>
         <h1 class="page-title" id="pageTitle">Dashboard</h1>
         <p class="page-subtitle" id="pageSubtitle">Overview of your hiring pipeline</p>
@@ -69,10 +69,10 @@
         <span>🔍</span>
         <input type="text" placeholder="Search candidates, skills..." id="globalSearch">
       </div>
-      <button class="btn-icon-only" onclick="navigateTo('notifications')" title="Notifications" id="notifBtn" type="button">
-        🔔 <span class="notif-dot" id="notifDot"></span>
+      <button class="btn-icon-only" onclick="navigateTo('notifications')" title="Notifications" id="notifBtn">
+        🔔 <span class="notif-dot" id="notifDot" style="display:none"></span>
       </button>
-      <button class="btn-icon-only export-btn" onclick="exportCSV()" title="Export CSV" id="exportBtn" type="button">⬇ CSV</button>
+      <button class="btn-icon-only export-btn" onclick="exportCSV()" title="Export CSV" id="exportBtn">⬇ CSV</button>
       <!-- Topbar Profile -->
       <div class="topbar-profile" id="topbarProfile">
         <div class="tp-av" id="topbarAv">HR</div>
@@ -159,25 +159,19 @@
         <div class="upload-left">
           <div class="dc">
             <h3 class="ct">Select Job Position</h3>
-            <div class="fg">
-              <label for="uploadJobSel">Target Role</label>
-              <select class="fi" id="uploadJobSel" title="Select target job role"></select>
-            </div>
+            <div class="fg"><label>Target Role</label><select class="fi" id="uploadJobSel"></select></div>
             <div class="divider"></div>
             <h3 class="ct">Upload Resume</h3>
             <div class="drop-zone" id="dropZone">
-              <div class="drop-icon">📄</div>
-              <strong class="drop-title">Drop resume here or click to browse</strong>
-              <span class="drop-hint">PDF · DOC · DOCX · TXT · Max 16MB</span>
+              <div style="font-size:2.5rem;opacity:.4">📄</div>
+              <strong>Drop resume here or click to browse</strong>
+              <span style="color:var(--sub);font-size:.8rem">PDF · DOC · DOCX · TXT · Max 16MB</span>
               <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt" hidden>
             </div>
-            <div class="file-preview hidden" id="filePrev">
-              <span class="file-icon">📄</span>
-              <div>
-                <div id="prevName" class="fn">file.pdf</div>
-                <div id="prevSize" class="fs">0 KB</div>
-              </div>
-              <button class="rm-btn" id="rmFile" type="button">✕</button>
+            <div class="file-preview" id="filePrev" style="display:none">
+              <span style="font-size:1.6rem">📄</span>
+              <div><div id="prevName" class="fn">file.pdf</div><div id="prevSize" class="fs">0 KB</div></div>
+              <button class="rm-btn" id="rmFile">✕</button>
             </div>
             <button class="btn-primary btn-full" id="analyzeBtn" disabled>⚡ Analyze Resume</button>
           </div>
@@ -185,16 +179,14 @@
         <div class="upload-right">
           <div class="dc results-panel" id="resultsPanel">
             <div class="rph" id="rph">
-              <div class="results-icon">📊</div>
-              <p class="results-hint">Upload a resume to see analysis results</p>
+              <div style="font-size:3rem;opacity:.2">📊</div>
+              <p style="color:var(--sub);text-align:center;font-size:.88rem">Upload a resume to see analysis results</p>
             </div>
-            <div id="rContent" class="hidden"></div>
-          <!-- Style moved to CSS -->
+            <div id="rContent" style="display:none"></div>
           </div>
         </div>
       </div>
-      <div class="up-overlay hidden" id="upOverlay">
-        <!-- Style moved to CSS -->
+      <div class="up-overlay" id="upOverlay" style="display:none">
         <div class="up-prog-card">
           <div class="spinner"></div>
           <div class="prog-title">Analyzing Resume...</div>
@@ -210,21 +202,19 @@
 
     <!-- ════ BULK UPLOAD ════ -->
     <div class="page" id="page-bulk">
-      <div class="dc bulk-upload-panel">
+      <div class="dc" style="max-width:700px;margin:0 auto">
         <h3 class="ct">Bulk Resume Upload</h3>
-        <p class="bulk-upload-desc">Upload multiple resumes at once. All will be screened against the selected job position.</p>
-        <div class="fg"><label for="bulkJobSel">Target Job Position</label><select class="fi" id="bulkJobSel" title="Select job position"></select></div>
+        <p style="color:var(--sub);font-size:.88rem;margin-bottom:20px">Upload multiple resumes at once. All will be screened against the selected job position.</p>
+        <div class="fg"><label>Target Job Position</label><select class="fi" id="bulkJobSel"></select></div>
         <div class="bulk-drop" id="bulkDrop">
-          <div class="bulk-drop-icon">📂</div>
-          <strong class="bulk-drop-title">Drop multiple resumes here</strong>
-          <span class="bulk-drop-hint">Or click to select files (PDF, DOC, DOCX, TXT)</span>
+          <div style="font-size:3rem;opacity:.3">📂</div>
+          <strong style="font-size:1rem">Drop multiple resumes here</strong>
+          <span style="color:var(--sub);font-size:.82rem">Or click to select files (PDF, DOC, DOCX, TXT)</span>
           <input type="file" id="bulkInput" accept=".pdf,.doc,.docx,.txt" multiple hidden>
         </div>
-        <div id="bulkFileList" class="bulk-file-list"></div>
-        <div id="bulkResults" class="bulk-results"></div>
-        <!-- Style moved to CSS -->
-        <!-- Style moved to CSS -->
-        <button class="btn-primary btn-full" id="bulkAnalyzeBtn" disabled type="button">⚡ Analyze All Resumes</button>
+        <div id="bulkFileList" style="margin:16px 0;display:flex;flex-direction:column;gap:8px"></div>
+        <button class="btn-primary btn-full" id="bulkAnalyzeBtn" disabled>⚡ Analyze All Resumes</button>
+        <div id="bulkResults" style="margin-top:20px"></div>
       </div>
     </div>
 
@@ -238,14 +228,13 @@
           <button class="fb" data-filter="maybe">❓ Maybe</button>
           <button class="fb" data-filter="rejected">❌ Rejected</button>
         </div>
-        <div class="cand-toolbar-actions">
-          <select class="fi compact" id="candJobFilter" title="Filter by job position"><option value="">All Positions</option></select>
-          <button class="btn-sec" onclick="loadCandidates()" type="button">⟳ Refresh</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select class="fi compact" id="candJobFilter"><option value="">All Positions</option></select>
+          <button class="btn-sec" onclick="loadCandidates()">⟳ Refresh</button>
         </div>
       </div>
       <div class="cand-grid" id="candGrid">
         <div class="empty-state"><div class="ei">👤</div><h3>No candidates yet</h3><p>Upload resumes to start screening</p><button class="btn-primary" onclick="navigateTo('upload')">Upload Resume</button></div>
-      <div class="empty-state"><div class="ei">👤</div><h3>No candidates yet</h3><p>Upload resumes to start screening</p><button class="btn-primary" onclick="navigateTo('upload')" type="button">Upload Resume</button></div>
       </div>
     </div>
 
@@ -260,7 +249,7 @@
         <div class="int-list-panel">
           <div class="panel-hdr">
             <h3 class="ct">Scheduled Interviews</h3>
-            <button class="btn-primary compact" id="scheduleNewBtn" onclick="openScheduleModal()" type="button">+ Schedule</button>
+            <button class="btn-primary compact" id="scheduleNewBtn" onclick="openScheduleModal()">+ Schedule</button>
           </div>
           <div id="interviewList"><div class="empty-sm">No interviews scheduled yet</div></div>
         </div>
@@ -278,7 +267,7 @@
         <div class="jobs-list-panel">
           <div class="panel-hdr">
             <h3 class="ct">Job Positions</h3>
-            <button class="btn-primary compact" id="newJobBtn" onclick="clearJobForm()" type="button">+ New Job</button>
+            <button class="btn-primary compact" id="newJobBtn" onclick="clearJobForm()">+ New Job</button>
           </div>
           <div id="jobsList"></div>
         </div>
@@ -291,18 +280,11 @@
             <div class="fg"><label>Required Skills *</label><input class="fi" id="jReq" placeholder="python, django, postgresql"></div>
             <div class="fg"><label>Preferred Skills</label><input class="fi" id="jPref" placeholder="kubernetes, aws, redis"></div>
             <div class="fg"><label>Min. Experience (years)</label><input class="fi" type="number" id="jExp" placeholder="3" min="0"></div>
-            <div class="fg">
-              <label for="jStatus">Job Status</label>
-              <select class="fi" id="jStatus" title="Job Status">
-                <option value="active">Active</option>
-                <option value="paused">Paused</option>
-                <option value="closed">Closed</option>
-              </select>
-            </div>
+            <div class="fg"><label>Job Status</label><select class="fi" id="jStatus"><option value="active">Active</option><option value="paused">Paused</option><option value="closed">Closed</option></select></div>
             <div class="fg"><label>Description</label><textarea class="fi" id="jDesc" rows="4" placeholder="Describe the role..."></textarea></div>
-            <div class="job-form-actions">
-              <button class="btn-primary" id="saveJobBtn" type="submit">Save Position</button>
-              <button class="btn-sec" onclick="clearJobForm()" type="button">Cancel</button>
+            <div style="display:flex;gap:10px">
+              <button class="btn-primary" style="flex:1" id="saveJobBtn">Save Position</button>
+              <button class="btn-sec" onclick="clearJobForm()" style="flex:1">Cancel</button>
             </div>
           </form>
         </div>
@@ -337,7 +319,7 @@
 
     <!-- ════ NOTIFICATIONS ════ -->
     <div class="page" id="page-notifications">
-      <div class="dc notifications-panel">
+      <div class="dc" style="max-width:700px;margin:0 auto">
         <h3 class="ct">Notifications</h3>
         <div id="notifList"><div class="empty-sm">No notifications yet</div></div>
       </div>
@@ -346,9 +328,9 @@
     <!-- ════ USERS (Admin only) ════ -->
     <div class="page" id="page-users">
       <div class="dc" style="max-width:800px;margin:0 auto">
-        <div class="users-header">
-           <h3 class="ct">Team Members</h3>
-           <button class="btn-primary compact" onclick="navigateTo('notifications')" type="button">View Activity</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <h3 class="ct">Team Members</h3>
+          <button class="btn-primary compact" onclick="navigateTo('notifications')">View Activity</button>
         </div>
         <div id="usersList"><div class="empty-sm">Loading...</div></div>
       </div>
@@ -356,11 +338,11 @@
 
     <!-- ════ ACCESS DENIED ════ -->
     <div class="page" id="page-denied">
-      <div class="denied-container">
-        <div class="denied-icon">🔒</div>
-        <h2 class="denied-title">Access Restricted</h2>
-        <p class="denied-message">You don't have permission to view this section.</p>
-        <button class="btn-primary" type="button" onclick="navigateTo('dashboard')">← Back to Dashboard</button>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;text-align:center">
+        <div style="font-size:4rem;margin-bottom:16px">🔒</div>
+        <h2 style="font-family:var(--fd);margin-bottom:8px">Access Restricted</h2>
+        <p style="color:var(--sub);font-size:.9rem">You don't have permission to view this section.</p>
+        <button class="btn-primary" style="margin-top:20px" onclick="navigateTo('dashboard')">← Back to Dashboard</button>
       </div>
     </div>
 
@@ -368,55 +350,36 @@
 </main>
 
 <!-- CANDIDATE MODAL -->
-<div class="modal-overlay hidden" id="candModal">
+<div class="modal-overlay" id="candModal" style="display:none">
   <div class="modal-card large">
-    <button class="modal-close" onclick="closeCandModal()" type="button">✕</button>
+    <button class="modal-close" onclick="closeCandModal()">✕</button>
     <div id="candModalContent"></div>
   </div>
 </div>
 
 <!-- INTERVIEW SCHEDULE MODAL -->
-<div class="modal-overlay hidden" id="schedModal">
+<div class="modal-overlay" id="schedModal" style="display:none">
   <div class="modal-card">
-    <button class="modal-close" onclick="closeSchedModal()" type="button">✕</button>
-    <h3 class="ct sched-title">📅 Schedule Interview</h3>
-    <div class="fg">
-      <label for="sIntCandidate">Candidate</label>
-      <select class="fi" id="sIntCandidate" title="Select candidate"></select>
+    <button class="modal-close" onclick="closeSchedModal()">✕</button>
+    <h3 class="ct" style="margin-bottom:20px">📅 Schedule Interview</h3>
+    <div class="fg"><label>Candidate</label><select class="fi" id="sIntCandidate"></select></div>
+    <div class="fg"><label>Interviewer Name</label><input class="fi" id="sIntInterviewer" placeholder="e.g. John Smith"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fg"><label>Date</label><input class="fi" type="date" id="sIntDate"></div>
+      <div class="fg"><label>Time</label><input class="fi" type="time" id="sIntTime"></div>
     </div>
-    <div class="fg">
-      <label for="sIntInterviewer">Interviewer Name</label>
-      <input class="fi" id="sIntInterviewer" placeholder="e.g. John Smith" title="Enter interviewer name">
-    </div>
-    <div class="sched-grid">
-      <div class="fg">
-        <label for="sIntDate">Date</label>
-        <input class="fi" type="date" id="sIntDate" title="Select interview date">
-      </div>
-      <div class="fg">
-        <label for="sIntTime">Time</label>
-        <input class="fi" type="time" id="sIntTime" title="Select interview time">
-      </div>
-    </div>
-    <div class="fg">
-      <label for="sIntType">Interview Type</label>
-      <select class="fi" id="sIntType" title="Select interview type">
+    <div class="fg"><label>Interview Type</label>
+      <select class="fi" id="sIntType">
         <option>Video Call</option><option>Phone Screening</option>
         <option>Technical Round</option><option>HR Round</option>
         <option>In-Person</option><option>Panel Interview</option>
       </select>
     </div>
-    <div class="fg">
-      <label for="sIntLink">Meeting Link (optional)</label>
-      <input class="fi" id="sIntLink" placeholder="https://meet.google.com/..." title="Enter meeting link">
-    </div>
-    <div class="fg">
-      <label for="sIntNotes">Notes</label>
-      <textarea class="fi" id="sIntNotes" rows="3" placeholder="Interview agenda, preparation notes..." title="Enter notes"></textarea>
-    </div>
-    <div class="schedule-actions">
-      <button class="btn-primary" onclick="saveInterview()" type="button">📅 Schedule & Notify</button>
-      <button class="btn-sec" onclick="closeSchedModal()" type="button">Cancel</button>
+    <div class="fg"><label>Meeting Link (optional)</label><input class="fi" id="sIntLink" placeholder="https://meet.google.com/..."></div>
+    <div class="fg"><label>Notes</label><textarea class="fi" id="sIntNotes" rows="3" placeholder="Interview agenda, preparation notes..."></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn-primary" style="flex:1" onclick="saveInterview()">📅 Schedule & Notify</button>
+      <button class="btn-sec" onclick="closeSchedModal()">Cancel</button>
     </div>
   </div>
 </div>
