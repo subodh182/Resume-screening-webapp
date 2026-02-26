@@ -15,7 +15,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--text);min-height
 .o1{width:500px;height:500px;background:rgba(76,201,240,0.07);top:-100px;right:-100px;animation:of 20s ease-in-out infinite;}
 .o2{width:400px;height:400px;background:rgba(129,140,248,0.06);bottom:-100px;left:-100px;animation:of 25s ease-in-out infinite reverse;}
 @keyframes of{0%,100%{transform:translate(0,0);}50%{transform:translate(30px,-30px);}}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:420px;max-width:95vw;position:relative;z-index:1;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px;width:420px;max-width:95vw;position:relative;z-index:1;backdrop-filter:blur(20px);}
 .logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;}
 .logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#4cc9f0,#818cf8);display:flex;align-items:center;justify-content:center;color:white;}
 .logo-text{font-family:var(--font-d);font-size:1.3rem;font-weight:700;}
@@ -56,7 +56,7 @@ select option{background:var(--surface);}
       </svg>
     </div>
     <div>
-      <div class="logo-text">TalentSift <span class="logo-version">v2</span></div>
+      <div class="logo-text">TalentSift <span style="background:linear-gradient(135deg,#4cc9f0,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:.75rem">v2</span></div>
       <div class="logo-sub">Resume Screening System</div>
     </div>
   </div>
@@ -67,7 +67,7 @@ select option{background:var(--surface);}
   </div>
 
   <!-- LOGIN -->
-  <div id="loginForm" class="show">
+  <div id="loginForm">
     <h2>Welcome back</h2>
     <p class="sub">Sign in to your TalentSift account</p>
     <div class="form-group">
@@ -83,7 +83,7 @@ select option{background:var(--surface);}
   </div>
 
   <!-- REGISTER -->
-  <div id="registerForm" class="hidden">
+  <div id="registerForm" style="display:none">
     <h2>Create account</h2>
     <p class="sub">Join TalentSift to start screening resumes</p>
     <div class="form-group">
@@ -99,9 +99,9 @@ select option{background:var(--surface);}
       <input type="password" id="regPass" placeholder="Min 6 characters">
     </div>
     <div class="form-group">
-      <label for="regRole">Role</label>
+      <label>Role</label>
       <div class="role-select-wrap">
-        <select id="regRole" onchange="updateRoleDesc()" aria-label="Role" title="Role">
+        <select id="regRole" onchange="updateRoleDesc()">
           <option value="recruiter">Recruiter</option>
           <option value="hr_manager">HR Manager</option>
           <option value="admin">Admin</option>
@@ -113,11 +113,6 @@ select option{background:var(--surface);}
     <div class="success-msg" id="regSuccess"></div>
     <button class="btn" id="regBtn" onclick="doRegister()">Create Account →</button>
   </div>
-</div>
-
-<div class="help-blur-box">
-  <h2>Need help?</h2>
-  <p>Check out our <a href="https://example.com/help">help center</a> or contact support.</p>
 </div>
 
 <script>
@@ -202,4 +197,3 @@ document.addEventListener('keydown', e => {
 </script>
 </body>
 </html>
-
