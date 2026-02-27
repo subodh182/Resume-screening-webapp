@@ -4,6 +4,7 @@ Features: MongoDB, Email Notifications, Bulk Upload, Interview Scheduler,
           Kanban Board, Role-based Auth, Analytics, Export
 """
 
+
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -67,10 +68,9 @@ class DB:
         if MONGO_AVAILABLE:
             try:
                 client = MongoClient(
-                    os.environ.get('MONGO_URI', 'mongodb://localhost:27017/'),
-                    serverSelectionTimeoutMS=2000
+                    os.environ.get('MONGO_URI'),
+                    serverSelectionTimeoutMS=5000
                 )
-                client.server_info()
                 self.db = client['talentsift']
                 self.use_mongo = True
                 print("✅ MongoDB connected")
