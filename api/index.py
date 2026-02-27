@@ -925,8 +925,8 @@ if __name__ == '__main__':
     print(f"  DOCX:     {'✅ python-docx' if DOCX_AVAILABLE else '⚠️  Basic extraction'}")
     print(f"  URL:      http://localhost:5000")
 
-    print("="*50 + "\n")
-    app.run(debug=True, port=5000)
+    if __name__ == '__main__':
+        app.run(host="0.0.0.0", port=5000)
 
-# Vercel entry point
-handler = app
+
+
