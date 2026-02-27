@@ -1,4 +1,4 @@
-  """
+"""
 TalentSift v2 — Advanced Resume Screening System
 Features: MongoDB, Email Notifications, Bulk Upload, Interview Scheduler,
           Kanban Board, Role-based Auth, Analytics, Export
@@ -23,9 +23,8 @@ try:
     import smtplib
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
-    EMAIL_AVAILABLE = True
 except ImportError:
-    EMAIL_AVAILABLE = False
+    MONGO_AVAILABLE = False
 
 try:
     import pdfplumber
@@ -52,7 +51,6 @@ app.config['MAIL_PORT']     = int(os.environ.get('MAIL_PORT', 587))
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
 app.config['MAIL_FROM']     = os.environ.get('MAIL_FROM',     'noreply@talentsift.com')
-
 
 
 # ── Database (MongoDB with in-memory fallback) ────────────────────────────────
