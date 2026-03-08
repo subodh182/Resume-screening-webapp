@@ -40,7 +40,12 @@ except ImportError:
     DOCX_AVAILABLE = False
 
 # ── App Config ────────────────────────────────────────────────────────────────
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="../templates",
+    static_folder="../static"
+)
+
 app.secret_key = os.environ.get('SECRET_KEY', 'talentsift_v2_secret_2024_xyz')
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024   # 50 MB
 app.config['UPLOAD_FOLDER'] = '/tmp'
@@ -307,7 +312,7 @@ class DB:
                     self.db.notifications.find().sort('created_at', -1).limit(limit)]
         return sorted(self._notifications, key=lambda x: x.get('created_at',''), reverse=True)[:limit]
 
-db = DB()
+db = None
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def allowed_file(filename):
@@ -928,7 +933,7 @@ if __name__ == '__main__':
     if __name__ == '__main__':
         app.run(host="0.0.0.0", port=5000)
 
-        
+
 
 
 
