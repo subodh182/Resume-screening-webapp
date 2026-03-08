@@ -551,7 +551,9 @@ def login_page():
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
-    d = request.get_json()
+    d = request.get_json(silent=True)
+    if not d:
+        return jsonify({'error': 'Invalid JSON data'}), 400
     user = db.find_user_by_email(d.get('email',''))
     if not user or not check_password_hash(user['password'], d.get('password','')):
         return jsonify({'error': 'Invalid email or password'}), 401
