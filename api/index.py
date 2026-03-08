@@ -562,7 +562,9 @@ def login():
 
 @app.route('/api/auth/register', methods=['POST'])
 def register():
-    d = request.get_json()
+    d = request.get_json(silent=True)
+    if not d:
+        return jsonify({'error': 'Invalid JSON data'}), 400
     if db.find_user_by_email(d.get('email','')):
         return jsonify({'error': 'Email already registered'}), 409
     uid = db.create_user({
@@ -596,7 +598,7 @@ def get_jobs():
 @app.route('/api/jobs', methods=['POST'])
 @login_required
 def create_job():
-    d = request.get_json()
+    d = request.get_json(silent=True)
     jid = db.create_job({
         'title':             d['title'],
         'department':        d.get('department',''),
