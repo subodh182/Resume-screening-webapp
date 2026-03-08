@@ -562,20 +562,45 @@ def login():
     session['user_role'] = user['role']
     return jsonify({'success': True, 'user': {'name': user['name'], 'role': user['role'], 'email': user['email']}})
 
+# @app.route('/api/auth/register', methods=['POST'])
+# def register():
+#     d = request.get_json(silent=True)
+#     if not d:
+#         return jsonify({'error': 'Invalid JSON data'}), 400
+#     if db.find_user_by_email(d.get('email','')):
+#         return jsonify({'error': 'Email already registered'}), 409
+#     uid = db.create_user({
+#         'name': d['name'], 'email': d['email'],
+#         'password': generate_password_hash(d['password']),
+#         'role': d.get('role', 'recruiter'),
+#         'created_at': datetime.now().isoformat()
+#     })
+#     return jsonify({'success': True, 'user_id': uid})
+
 @app.route('/api/auth/register', methods=['POST'])
 def register():
-    d = request.get_json(silent=True)
-    if not d:
-        return jsonify({'error': 'Invalid JSON data'}), 400
-    if db.find_user_by_email(d.get('email','')):
-        return jsonify({'error': 'Email already registered'}), 409
-    uid = db.create_user({
-        'name': d['name'], 'email': d['email'],
-        'password': generate_password_hash(d['password']),
-        'role': d.get('role', 'recruiter'),
-        'created_at': datetime.now().isoformat()
-    })
-    return jsonify({'success': True, 'user_id': uid})
+    try:
+        d = request.get_json(silent=True)
+
+        if not d:
+            return jsonify({"error": "Invalid request"}), 400
+
+        if db.find_user_by_email(d.get('email','')):
+            return jsonify({'error': 'Email already registered'}), 409
+
+        uid = db.create_user({
+            'name': d.get('name'),
+            'email': d.get('email'),
+            'password': generate_password_hash(d.get('password')),
+            'role': d.get('role','recruiter'),
+            'created_at': datetime.now().isoformat()
+        })
+
+        return jsonify({'success': True, 'user_id': uid})
+
+    except Exception as e:
+        print("REGISTER ERROR:", str(e))
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/auth/logout', methods=['POST'])
 def logout():
