@@ -312,7 +312,7 @@ class DB:
                     self.db.notifications.find().sort('created_at', -1).limit(limit)]
         return sorted(self._notifications, key=lambda x: x.get('created_at',''), reverse=True)[:limit]
 
-db = None
+db = DB()
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def allowed_file(filename):
